@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.contrib.auth.base_user import BaseUserManager
 
+import logging
+logger = logging.getLogger("app")
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -18,6 +20,7 @@ class UserManager(BaseUserManager):
         #     raise ValueError('The given username must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
+        logger.debug(f'user: {user}')
         user.set_password(password)
         user.save(using=self._db)
         return user

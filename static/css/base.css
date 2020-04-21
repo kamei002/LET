@@ -1,3 +1,7 @@
+ul, li {
+  list-style: none;
+}
+
 .topbar {
   padding: 0.5em 1em;
   height: 50px;
@@ -97,17 +101,36 @@
   text-shadow: 0px 0px #640E13, -1px 1px #640E13, -2px 2px #640E13, -3px 3px #640E13, -4px 4px #640E13, -5px 5px #640E13, -6px 6px #640E13, -7px 7px #640E13, -8px 8px #640E13, -9px 9px #640E13, -10px 10px #640E13, -11px 11px #640E13, -12px 12px #640E13, -13px 13px #640E13, -14px 14px #640E13, -15px 15px #640E13, -16px 16px #640E13, -17px 17px #640E13, -18px 18px #640E13, -19px 19px #640E13, -20px 20px;
 }
 
-.login-container .login-form form .form-contents input {
-  padding-left: 10px;
-  width: 100%;
-  height: 45px;
-  margin-bottom: 1rem;
-}
-
 .login-container .login-form .error-message {
   background-color: #fbf1f2;
   color: #dc3545;
   padding: 1em;
   border: 1px solid;
   margin: 1em 0;
+}
+
+.login-container .field-wrap {
+  margin-bottom: 1rem;
+}
+
+.login-container .field-wrap .field-contents input {
+  padding-left: 10px;
+  width: 100%;
+  height: 45px;
+}
+
+.login-container .field-wrap .valid-error {
+  background-color: #fbf1f2;
+  color: #dc3545;
+  padding: 1em;
+  border: 1px solid;
+}
+
+.login-container .field-wrap .valid-error:empty {
+  display: none;
+}
+
+.login-container .field-wrap .valid-error ul {
+  padding: 0;
+  margin: 0;
 }

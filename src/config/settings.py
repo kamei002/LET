@@ -163,7 +163,7 @@ LOGGING = {
                 [
                     "[%(levelname)s]",
                     "%(asctime)s",
-                    "%(name)s.%(funcName)s:%(lineno)s",
+                    "%(pathname)s:%(lineno)s",
                     "%(message)s",
                 ]
             )

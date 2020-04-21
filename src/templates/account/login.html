@@ -5,21 +5,30 @@
             <form method="post" action="">
                 {% csrf_token %}
                 <div class="logowrap">
-                    <div class="title">LET</div>
+                    <div class="title">Login</div>
                 </div>
                 {% if login_failed %}
                 <div class="error-message">
                     メールアドレスかパスワードが間違っています
                 </div>
                 {% endif %}
-                <div class="form-contents">{{ login_form.email }}</div>
-                <div class="form-contents">{{ login_form.password }}</div>
+                <div class="field-wrap">
+                    <div class="field-contents">{{ form.email }}</div>
+                    <div class="valid-error">{{ form.errors.email }}</div>
+                </div>
+                <div class="field-wrap">
+                    <div class="field-contents">{{ form.password }}</div>
+                    <div class="valid-error">{{ form.errors.password }}</div>
+                </div>
+                <div class="flex-center field-wrap">
+                    <input type="submit" class="btn btn-primary" value="ログイン">
+                </div>
                 <div class="flex-center">
-                    <input type="submit" class="btn btn-primary" value="Login">
+                    <a href="/account/create/">アカウント登録はこちら</a>
                 </div>
             </form>
         </div>
     </div>
-    
-    
+
+
 {% endblock %}
