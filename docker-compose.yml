@@ -1,0 +1,87 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:8.0
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/my.cnf
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - TZ=${TZ}
+    ports:
+      - ${DB_PORT}:3306
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+
+  python:
+    restart: always
+    build: ./docker/python/
+    volumes:
+      - ./src:/home/src
+      - ./logs/django:/logs
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    expose:
+      - "3031"
+    depends_on:
+      - db
+    working_dir: /home/src
+    # command: bash -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:3031"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:3031"
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_PORT=${DB_PORT}
+    user: "${UID}:${GID}"
+
+  nginx:
+    restart: always
+    image: nginx
+    depends_on:
+      - python
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/:/etc/nginx/"
+      - "./nginx/:/nginx/"
+      - "./static:/opt/apps/static/"
+
+
+  node: # gulpコマンドを実行するときに都度実行
+    build: ./docker/node
+    volumes:
+      - type: bind
+        source: ./static
+        target: /data/static
+        volume:
+          nocopy: true
+
+      # - type: volume
+      #   source: node_modules
+      #   target: /data/node_modules
+      #   volume:
+      #     nocopy: true
+
+      - type: bind
+        source: ./docker/node/gulpfile.js
+        target: /data/gulpfile.js
+        volume:
+          nocopy: true
+
+      - type: bind
+        source: ./docker/node/package.json
+        target: /data/package.js
+        volume:
+          nocopy: true
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+        
+    command: bash -c " gulp watch"
+    tty: true
+
+volumes:
+  db-store:
+  # node_modules:

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="login-container">
+        <div class="login-form">
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="logowrap">
+                    <div class="title">LET</div>
+                </div>
+                {% if login_failed %}
+                <div class="error-message">
+                    メールアドレスかパスワードが間違っています
+                </div>
+                {% endif %}
+                <div class="form-contents">{{ login_form.email }}</div>
+                <div class="form-contents">{{ login_form.password }}</div>
+                <div class="flex-center">
+                    <input type="submit" class="btn btn-primary" value="Login">
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+{% endblock %}
