@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import datetime
 
 AUTH_USER_MODEL = 'account.User'
 
@@ -25,9 +26,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '46#w4!snay21xkvn(%$pr-$)7-u-#jf0*s9#*gb@_3lcudr%_8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = False
 DEBUG = True
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'account',
-    # 'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+                'static_cb': 'account.templatetags.static_cb',
+            },
         },
     },
 ]
@@ -224,3 +229,6 @@ LOGGING = {
 LOGIN_URL = '/account/login'     # ログイン
 LOGOUT_URL = '/account/logout'   # ログアウト
 LOGIN_REDIRECT_URL = '/account/dashboard'
+
+# ブラウザキャシュを防ぐためにファイル名のあとにパラメータをつける　{% load static_qb %}
+CACHE_BUSTING_QUERY = datetime.datetime.now().strftime('%Y%m%d%H%M%S%s')
