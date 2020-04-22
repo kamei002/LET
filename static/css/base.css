@@ -49,6 +49,7 @@ ul, li {
 .contents-wrap .main-contents-wrapper .main-contents {
   width: 100%;
   min-height: calc(100vh - 100px);
+  padding: 2em;
 }
 
 .contents-wrap .main-contents-wrapper footer {
@@ -133,4 +134,36 @@ ul, li {
 .login-container .field-wrap .valid-error ul {
   padding: 0;
   margin: 0;
+}
+
+.card-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.card-wrap .word-card {
+  margin: 1em;
+  width: 400px;
+  min-height: 4.5em;
+}
+
+.card-wrap .word-card .word {
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: #0062cc;
+  color: #fff;
+  padding: 10px;
+}
+
+.card-wrap .word-card .word i audio {
+  display: none;
+}
+
+.card-wrap .word-card .mean {
+  width: 100%;
+  word-break: break-all;
+  height: calc(100% - 3em);
+  background-color: rgba(0, 123, 255, 0.25);
+  padding: 1em;
 }

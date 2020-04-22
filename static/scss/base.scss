@@ -46,6 +46,7 @@ ul,li {
         .main-contents{
             width: 100%;
             min-height: $contents_height;
+            padding: 2em;
         }
         footer{
             height: $footer_height;
@@ -129,4 +130,39 @@ ul,li {
         }
     }
 
+}
+
+.card-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .word-card{
+        margin: 1em;
+        width: 400px;
+        min-height: 4.5em;
+
+        .word{
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #0062cc;
+            color: #fff;
+            padding: 10px;
+
+            i {
+                audio{
+                display: none;
+                }
+            }
+        }
+        .mean{
+            width: 100%;
+            word-break: break-all;
+            height: calc(100% - 3em);
+            background-color: rgba(0, 123, 255, 0.25);
+            padding: 1em;
+
+        }
+
+    }
 }

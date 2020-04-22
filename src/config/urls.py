@@ -19,4 +19,5 @@ from django.conf.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls', namespace='account')),
+    path('word/', include('learn_word.urls', namespace='word')),
 ]
