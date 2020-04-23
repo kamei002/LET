@@ -8,13 +8,13 @@ logger = logging.getLogger("app")
 
 
 def show_study_words(user_id):
-    logger.debug(user_id)
-    user = User.objects.get(pk=user_id)
-    logger.debug(user)
-    setting = WordLearnSetting.find_by_user_id(user_id=user_id)
-    logger.debug(setting)
-    limit = setting.display_num
-    return limit
+
+    logger.debug("show_study_words")
+    word_list = EnglishWord.objects.order_by(
+        "word_summary__display_count"
+    )[:10]
+
+    return word_list
 
 
 class WordCategory(models.Model):
@@ -34,7 +34,6 @@ class EnglishWord(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    last_displayed_at = models.DateTimeField(null=True, default=timezone.now)
     category = models.ForeignKey(WordCategory, null=True, on_delete=models.SET_NULL, related_name='word_audios')
 
     class Meta:
@@ -45,6 +44,16 @@ class EnglishWord(models.Model):
             Q(mean__isnull=True) | Q(audio_path__isnull=True)
         )
 
+
+class WordSummary(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='word_summaries')
+    english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='word_summary')
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    display_count = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'word_summary'
 
 class WordLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='word_logs')

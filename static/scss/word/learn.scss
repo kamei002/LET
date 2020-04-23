@@ -1,0 +1,50 @@
+
+.card-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .learn-card{
+        margin: 1em;
+        width: 100%;
+        max-width: 600px;
+        min-height: 50vh;
+
+        .title{
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #0062cc;
+            color: #fff;
+            padding: 10px;
+
+            display: flex;
+            justify-content: space-between;
+
+            i {
+                cursor: pointer;
+                audio{
+                    display: none;
+                }
+            }
+
+        }
+        .content{
+            width: 100%;
+            word-break: break-all;
+            height: calc(100% - 3em);
+            background-color: rgba(0, 123, 255, 0.25);
+            .mean{
+                padding: 1em;
+                &.hide{
+                    color: rgba(0, 0, 0, 0);
+                }
+            }
+
+        }
+
+    }
+}
+
+.button-area{
+    margin: 1em;
+}

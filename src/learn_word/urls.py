@@ -5,5 +5,6 @@ from rest_framework import routers
 app_name = 'word'
 router = routers.DefaultRouter()
 urlpatterns = [
-    path('', views.WordList.as_view()),
+    path('', views.Learn.as_view()),
+    path('list', views.WordList.as_view()),
 ]

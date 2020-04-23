@@ -1,48 +1,41 @@
 {% extends "base.html" %}
+{% load static_cb %}
+
+{% block head %}
+    <link href="{% static 'css/word/learn.css' %}" rel="stylesheet">
+{% endblock %}
+{% block bottom %}
+    <script type="text/javascript" src="{% static 'js/word/learn.js' %}"></script>
+{% endblock %}
 {% block content %}
 <div clss="contents_wrapper">
     <div class="card-wrap">
-        {% for word in page_obj %}
-            <div class="word-card">
-                <div class="word">{{ word.word }}
-                    <i class="fa fa-volume-up contentTopAudioIcon">
+        <div class="learn-card">
+            <div class="title">
+
+                <div>
+                    {{ study_word.word }}
+                    <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
                         <audio class="contentAudio" controls="controls" preload="none">
-                            <source src="{{word.audio_path}}" type="audio/mpeg">
+                            <source src="{{study_word.audio_path}}" type="audio/mpeg">
                         </audio>
                     </i>
                 </div>
-                <div class="mean">{{ word.mean }}</div>
+                <div>
+                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                </div>
             </div>
-        {% endfor %}
+            <div v-on:click="toggleVisible" class="content hide">
+                <div class="mean hide">{{ study_word.mean }}</div>
+            </div>
+        </div>
     </div>
-    <div>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li><a class="page-link text-primary d-inline-block" href="?page={{ page_obj.previous_page_number }}">前</a></li>
-                {% else %}
-                    <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">前</div></li>
-                {% endif %}
 
-                {% for link_page in page_obj.paginator.page_range %}
-                    {% if link_page %}
-                        {% if link_page == page_obj.number %}
-                            <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">{{ link_page }}</div></li>
-                        {% else %}
-                            <li><a class="page-link text-primary d-inline-block" href="?page={{ link_page }}">{{ link_page }}</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li class="disabled"><a class="page-link text-secondary d-inline-block text-muted" href="#">・・・</a></li>
-                    {% endif %}
-                {% endfor %}
+    <div class="button-area">
+        <div class="button green">わかった</div>
+        <div class="button red">わからなかった</div>
 
-                {% if page_obj.has_next %}
-                    <li><a class="page-link text-primary d-inline-block" href="?page={{ page_obj.next_page_number }}">次</a></li>
-                {% else %}
-                    <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">次</div></li>
-                {% endif %}
-            </ul>
-        </nav>
     </div>
+
 </div>
 {% endblock %}
