@@ -20,7 +20,7 @@ const app = new Vue({
                 'word_summary_id': this.wordSummaryId
             });
 
-            axios.post('http://localhost/word/api/star', data, this.ajaxConfig)
+            axios.post('/word/api/star', data, this.ajaxConfig)
             .then(function(res){
                 app.isChecked = res.data.is_checked
             })
@@ -32,7 +32,7 @@ const app = new Vue({
             const data = JSON.stringify({
                 'word_log_id': this.wordLogId
             });
-            axios.post('http://localhost/word/api/unknown-word', data, this.ajaxConfig)
+            axios.post('/word/api/unknown-word', data, this.ajaxConfig)
             .then(function(res){
                 console.log(res)
                 if(res.status === 200){
