@@ -43,8 +43,8 @@ services:
     image: nginx
     depends_on:
       - python
-    ports:
-      - "80:80"
+    # ports:
+    #   - "80:80"
     volumes:
       - "./nginx/:/etc/nginx/"
       - "./nginx/:/nginx/"
