@@ -81,4 +81,7 @@ class Dashboard(LoginRequiredMixin, APIView):
 
     def get(self, request):
         logger.debug('Dashboard')
+        from django.conf import settings
+        logger.debug(f'debug: {settings.DEBUG}')
+        logger.debug(f'SECRET_KEY: {settings.SECRET_KEY}')
         return Response(template_name='account/dashboard.html')

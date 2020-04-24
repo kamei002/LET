@@ -40,6 +40,9 @@ body{
             width: 100%;
             #main-contents{
                 width: 100%;
+                .contents-area{
+                    margin: 1em;
+                }
             }
             footer{
                 height: 50px;
@@ -94,5 +97,70 @@ body{
     text-align: center;
     margin: 10px auto;
     cursor: pointer;
+
+}
+
+
+.card-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .card{
+        margin: 1em;
+        max-width: 100%;
+        .sambnail{
+            max-width: 320px;
+            min-width: 100px;
+            max-height: 170px;
+            min-width: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            img{
+                max-width:300px;
+                max-height: 150px;
+                padding: 10px;
+            }
+
+        }
+
+        .title{
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            background-color: #0062cc;
+            color: #fff;
+            padding: 10px;
+
+            i {
+                cursor: pointer;
+                audio{
+                    display: none;
+                }
+            }
+        }
+        .contents{
+            width: 100%;
+            word-break: break-all;
+            height: calc(100% - 3em);
+            background-color: rgba(0, 123, 255, 0.25);
+            .mean{
+                padding: 1em;
+                &.hide{
+                    color: rgba(0, 0, 0, 0);
+                }
+                height: calc(100% - 2em);
+            }
+            .button-area{
+                height: 2em;
+                background-color: #fff;
+            }
+
+        }
+
+    }
 
 }

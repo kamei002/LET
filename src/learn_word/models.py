@@ -7,23 +7,49 @@ import logging
 logger = logging.getLogger("app")
 
 
-def show_study_words(user_id):
+def show_study_words(category_id=None):
 
     logger.debug("show_study_words")
-    word_list = EnglishWord.objects.order_by(
+    word_list = EnglishWord.objects.all()
+    if category_id:
+        word_list = word_list.filter(category_id=category_id)
+    word_list = word_list.order_by(
         "word_summary__display_count"
     )[:10]
+
+    logger.debug(word_list.query)
 
     return word_list
 
 
 class WordCategory(models.Model):
     name = models.CharField(max_length=255)
-    parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='children')
+    path = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'word_category'
 
+    def get_category(path="/"):
+        result = WordCategory.objects.filter(path=path)
+        return result
+
+    def get_children(self):
+        search_path = f'{self.path}{self.id}/'
+        result = WordCategory.objects.filter(path__contains=search_path)
+        return result
+
+    def has_word_relation(self):
+        result = self.words.exists()
+        return result
+
+    def has_word_relations(self):
+        if self.has_word_relation():
+            return True
+        child_categories = self.get_children()
+        for category in child_categories:
+            if not category.has_word_relation():
+                return True
+        return False
 
 class EnglishWord(models.Model):
     word = models.CharField(max_length=255)
@@ -33,7 +59,7 @@ class EnglishWord(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(WordCategory, null=True, on_delete=models.SET_NULL, related_name='word_audios')
+    category = models.ForeignKey(WordCategory, null=True, on_delete=models.SET_NULL, related_name='words')
 
     class Meta:
         db_table = 'english_word'

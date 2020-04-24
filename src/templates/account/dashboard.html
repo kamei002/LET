@@ -1,11 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Dashboard</h1>
+{% load static_cb %}
 
-<div>
-    <div>
-        <a href="/word/">単語学習</a>
+{% block head %}
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}
+<div class="contents-area">
+    <div class="card-wrap">
+        <div class="card">
+            <a href="/word/">
+                <div class="title">
+                    Learn
+                </div>
+                <div class="contents">
+                    <div class="sambnail">
+                        <img src="{% static 'images/learn.jpg' %}">
+
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/word/category">
+                <div class="title">
+                    Category
+                </div>
+                <div class="contents">
+                    <div class="sambnail">
+                        <img src="{% static 'images/category.jpg' %}">
+
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
+
 {% endblock %}

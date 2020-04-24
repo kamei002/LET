@@ -35,6 +35,7 @@ services:
       - DB_PASS=${DB_PASS}
       - DB_PORT=${DB_PORT}
       - DJANGO_DEBUG=False
+      - SECRET_KEY=${SECRET_KEY}
     user: "${UID}:${GID}"
 
   nginx:
@@ -42,8 +43,8 @@ services:
     image: nginx
     depends_on:
       - python
-    # ports:
-    #   - "80:80"
+    ports:
+      - "80:80"
     volumes:
       - "./nginx/:/etc/nginx/"
       - "./nginx/:/nginx/"

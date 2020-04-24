@@ -47,6 +47,10 @@ body {
   width: 100%;
 }
 
+#app .contents-wrap .main-contents-wrapper #main-contents .contents-area {
+  margin: 1em;
+}
+
 #app .contents-wrap .main-contents-wrapper footer {
   height: 50px;
   display: flex;
@@ -100,4 +104,70 @@ body {
   background-color: #bd2130;
   border-color: #bd2130;
   color: #fff;
+}
+
+.card-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.card-wrap .card {
+  margin: 1em;
+  max-width: 100%;
+}
+
+.card-wrap .card .sambnail {
+  max-width: 320px;
+  min-width: 100px;
+  max-height: 170px;
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.card-wrap .card .sambnail img {
+  max-width: 300px;
+  max-height: 150px;
+  padding: 10px;
+}
+
+.card-wrap .card .title {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  background-color: #0062cc;
+  color: #fff;
+  padding: 10px;
+}
+
+.card-wrap .card .title i {
+  cursor: pointer;
+}
+
+.card-wrap .card .title i audio {
+  display: none;
+}
+
+.card-wrap .card .contents {
+  width: 100%;
+  word-break: break-all;
+  height: calc(100% - 3em);
+  background-color: rgba(0, 123, 255, 0.25);
+}
+
+.card-wrap .card .contents .mean {
+  padding: 1em;
+  height: calc(100% - 2em);
+}
+
+.card-wrap .card .contents .mean.hide {
+  color: rgba(0, 0, 0, 0);
+}
+
+.card-wrap .card .contents .button-area {
+  height: 2em;
+  background-color: #fff;
 }
