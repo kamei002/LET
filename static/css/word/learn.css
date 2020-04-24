@@ -29,6 +29,10 @@
   display: none;
 }
 
+.card-wrap .learn-card .title i.fa-star {
+  color: #ffc107;
+}
+
 .card-wrap .learn-card .content {
   width: 100%;
   word-break: break-all;

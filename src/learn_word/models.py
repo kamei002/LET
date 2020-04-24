@@ -29,7 +29,6 @@ class EnglishWord(models.Model):
     word = models.CharField(max_length=255)
     mean = models.CharField(max_length=255, null=True)
     audio_path = models.CharField(max_length=255, null=True)
-    is_checked = models.BooleanField(default=False)
     order = models.IntegerField(null=True, default=0)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -51,9 +50,17 @@ class WordSummary(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     display_count = models.IntegerField(default=0)
+    is_checked = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'word_summary'
+
+    def find_one(user_id, english_word_id):
+        result = WordSummary.objects.filter(english_word_id=english_word_id).first()
+        if result is None:
+            result = WordSummary(user_id=user_id, english_word_id=english_word_id)
+            result.save()
+        return result
 
 class WordLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='word_logs')
@@ -63,6 +70,13 @@ class WordLog(models.Model):
 
     class Meta:
         db_table = 'word_log'
+
+    def find_one(user_id, english_word_id):
+        result = WordLog.objects.filter(english_word_id=english_word_id).first()
+        if result is None:
+            result = WordLog(user_id=user_id, english_word_id=english_word_id)
+            result.save()
+        return result
 
 
 class WordLearnSetting(models.Model):

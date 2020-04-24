@@ -3,6 +3,7 @@
 
 {% block head %}
     <link href="{% static 'css/word/learn.css' %}" rel="stylesheet">
+    <div></div>
 {% endblock %}
 {% block bottom %}
     <script type="text/javascript" src="{% static 'js/word/learn.js' %}"></script>
@@ -10,7 +11,7 @@
 {% block content %}
 <div clss="contents_wrapper">
     <div class="card-wrap">
-        <div class="learn-card">
+        <div class="learn-card" id="card">
             <div class="title">
 
                 <div>
@@ -22,18 +23,27 @@
                     </i>
                 </div>
                 <div>
-                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                    <i v-on:click="toggleStar" v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }" class="fa" aria-hidden="true"></i>
                 </div>
             </div>
             <div v-on:click="toggleVisible" class="content hide">
                 <div class="mean hide">{{ study_word.mean }}</div>
+
+                <input id="server_params" type="hidden"
+                    data-is-checked={{word_summary.is_checked}}
+                    data-word-summary-id={{word_summary.id}}
+                    data-word-log-id={{word_log.id}}
+                    data-word-word={{study_word.word}}
+                    data-word-audio-path={{study_word.audio_path}}
+
+                >
             </div>
         </div>
     </div>
 
     <div class="button-area">
-        <div class="button green">わかった</div>
-        <div class="button red">わからなかった</div>
+        <div v-on:click="next" class="button green">わかった</div>
+        <div v-on:click="markedUnknown" class="button red">わからなかった</div>
 
     </div>
 
