@@ -28,7 +28,8 @@ services:
     depends_on:
       - db
     working_dir: /home/src
-    command: bash -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:3031"
+    # command: bash -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:3031"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:3031"
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -42,27 +43,45 @@ services:
     image: nginx
     depends_on:
       - python
-    # ports:
-    #   - "80:80"
+    ports:
+      - "80:80"
     volumes:
       - "./nginx/:/etc/nginx/"
       - "./nginx/:/nginx/"
       - "./static:/opt/apps/static/"
 
 
-  https-portal:
-    image: steveltn/https-portal:1
-    ports:
-      - '80:80'
-      - '443:443'
-    links:
-      - nginx
-    restart: always
-    environment:
-      DOMAINS: 'ascreit.com -> http://nginx'
-      # STAGE: 'local'
-      STAGE: 'production'
-      FORCE_RENEW: 'true'
+  node: # gulpコマンドを実行するときに都度実行
+    build: ./docker/node
+    volumes:
+      - type: bind
+        source: ./static
+        target: /data/static
+        volume:
+          nocopy: true
+
+      # - type: volume
+      #   source: node_modules
+      #   target: /data/node_modules
+      #   volume:
+      #     nocopy: true
+
+      - type: bind
+        source: ./docker/node/gulpfile.js
+        target: /data/gulpfile.js
+        volume:
+          nocopy: true
+
+      - type: bind
+        source: ./docker/node/package.json
+        target: /data/package.js
+        volume:
+          nocopy: true
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+
+    command: bash -c " gulp watch"
+    tty: true
 
 
 volumes:

@@ -27,7 +27,7 @@ SECRET_KEY = '46#w4!snay21xkvn(%$pr-$)7-u-#jf0*s9#*gb@_3lcudr%_8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
-DEBUG = True
+DEBUG = os.environ['DJANGO_DEBUG']
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 ALLOWED_HOSTS = ['*']
