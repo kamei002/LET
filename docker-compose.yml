@@ -62,7 +62,7 @@ services:
       DOMAINS: 'ascreit.com -> http://nginx'
       # STAGE: 'local'
       STAGE: 'production'
-      FORCE_RENEW: 'true'
+      # FORCE_RENEW: 'true'
 
 
 volumes:

@@ -11,13 +11,16 @@ def show_study_words(category_id=None):
 
     logger.debug("show_study_words")
     word_list = EnglishWord.objects.all()
+
     if category_id:
-        word_list = word_list.filter(category_id=category_id)
+        category = WordCategory.objects.get(pk=category_id)
+        category_ids = set(category.get_children().values_list('id', flat=True))
+        category_ids.add(category_id)
+        word_list = word_list.filter(category_id__in=category_ids)
+
     word_list = word_list.order_by(
         "word_summary__display_count"
     )[:10]
-
-    logger.debug(word_list.query)
 
     return word_list
 
