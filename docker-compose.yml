@@ -63,7 +63,8 @@ services:
       # STAGE: 'local'
       STAGE: 'production'
       # FORCE_RENEW: 'true'
-
+    volumes:
+      - /data/ssl_certs:/var/lib/https-portal
 
 volumes:
   db-store:
