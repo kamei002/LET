@@ -16,7 +16,7 @@ import datetime
 AUTH_USER_MODEL = 'account.User'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.abspath(os.path.join(__file__, '../../../'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +27,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '46#w4!snay21xkvn(%$pr-$)7-u-#jf0*s9#*
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
-DEBUG = os.environ['DJANGO_DEBUG']
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 ALLOWED_HOSTS = ['*']

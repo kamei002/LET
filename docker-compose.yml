@@ -34,8 +34,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_PORT=${DB_PORT}
-      - DJANGO_DEBUG=False
-      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_SETTINGS_MODULE=config.settings.prod
     user: "${UID}:${GID}"
 
   nginx:
