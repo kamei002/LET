@@ -70,8 +70,7 @@ class Login(APIView):
 class Logout(APIView):
 
     def get(self, request):
-        logger.debug(request.user)
-        logger.debug('logout')
+        logger.debug(f'logout user:{request.user}')
         logout(request)
         return redirect('/account/login/')
 
@@ -80,8 +79,4 @@ class Dashboard(LoginRequiredMixin, APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
     def get(self, request):
-        logger.debug('Dashboard')
-        from django.conf import settings
-        logger.debug(f'debug: {settings.DEBUG}')
-        logger.debug(f'SECRET_KEY: {settings.SECRET_KEY}')
         return Response(template_name='account/dashboard.html')

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'learn_word',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -194,7 +195,15 @@ LOGGING = {
         'my_log': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/logs/app.log',
+            'filename': '/logs/django/app.log',
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'my_log_format',
+        },
+        'worker': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/logs/celery/worker.log',
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'my_log_format',
@@ -202,7 +211,7 @@ LOGGING = {
         'error': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/logs/error.log',
+            'filename': '/logs/django/error.log',
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'my_log_format',
@@ -224,6 +233,11 @@ LOGGING = {
             'level': os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
             'propagate': True,
         },
+        'worker': {
+            'handlers': ['worker'],
+            'level': os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+            'propagate': True,
+        },
     }
 }
 LOGIN_URL = '/account/login'     # ログイン
@@ -232,3 +246,12 @@ LOGIN_REDIRECT_URL = '/account/dashboard'
 
 # ブラウザキャシュを防ぐためにファイル名のあとにパラメータをつける　{% load static_qb %}
 CACHE_BUSTING_QUERY = datetime.datetime.now().strftime('%Y%m%d%H%M%S%s')
+
+# CELERY
+BROKER_URL = "redis://redis:6379"
+RESULT_BACKEND = "redis://redis:6379"
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERYD_LOG_FILE = "/logs/celery/worker.log"
+CELERY_IMPORTS = ('config.tasks')

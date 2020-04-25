@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from learn_word import models
+from config import tasks
 
 # from learn_word.tasks.weblio_scrap import Scraper
 import logging
@@ -137,3 +138,9 @@ def learn_category(request, category_id):
     logger.debug(word_summary)
     data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log}
     return render(request, template_name='word/learn.html', context=data)
+
+
+@login_required
+def scrap(request):
+    tasks.scrap_weblio.delay()
+    return render(request, status=status.HTTP_200_OK)

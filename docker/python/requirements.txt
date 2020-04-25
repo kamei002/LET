@@ -9,3 +9,7 @@ beautifulsoup4==4.9.0
 requests
 lxml==4.5.0
 tqdm==4.45.0
+celery==4.4.2
+django-celery-results==1.2.1
+django-redis==4.11.0
+flower==0.9.4

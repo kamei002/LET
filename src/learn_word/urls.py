@@ -10,5 +10,7 @@ urlpatterns = [
     path('api/star', views.Star.as_view()),
     path('api/unknown-word', views.UnknownWord.as_view()),
     path('category', views.category),
-    path('category/<int:category_id>/learn', views.learn_category)
+    path('category/<int:category_id>/learn', views.learn_category),
+    path('api/scrap', views.scrap),
+
 ]
