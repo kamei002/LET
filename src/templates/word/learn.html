@@ -26,8 +26,8 @@
                     <i v-on:click="toggleStar" v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }" class="fa" aria-hidden="true"></i>
                 </div>
             </div>
-            <div v-on:click="toggleVisible" class="content hide">
-                <div class="mean hide">{{ study_word.mean }}</div>
+            <div v-on:click="toggleVisible" class="content">
+                <div v-bind:class="{'hide': meanHide}" class="mean">{{ study_word.mean }}</div>
 
                 <input id="server_params" type="hidden"
                     data-is-checked={{word_summary.is_checked}}
@@ -35,17 +35,24 @@
                     data-word-log-id={{word_log.id}}
                     data-word-word={{study_word.word}}
                     data-word-audio-path={{study_word.audio_path}}
-
+                    data-category-id={{category_id}}
+                    data-index={{index}}
                 >
             </div>
         </div>
     </div>
 
     <div class="button-area">
+        <div class="answer">
+            <input type="text" id="answer" placeholder="Answer here" ref="answer" v-bind:class="{ 'error': errorAnswer}" autocomplete="off">
+        </div>
         <div v-on:click="next" class="button green">わかった</div>
         <div v-on:click="markedUnknown" class="button red">わからなかった</div>
 
     </div>
+    <form method="get" id="form" action="">
+        <input type="hidden" id="index" name="index">
+    </form>
 
 </div>
 {% endblock %}

@@ -42,29 +42,29 @@ services:
     image: nginx
     depends_on:
       - python
-    # ports:
-    #   - "80:80"
+    ports:
+      - "80:80"
     volumes:
       - "./nginx/:/etc/nginx/"
       - "./nginx/:/nginx/"
       - "./static:/opt/apps/static/"
 
 
-  https-portal:
-    image: steveltn/https-portal:1
-    ports:
-      - '80:80'
-      - '443:443'
-    links:
-      - nginx
-    restart: always
-    environment:
-      DOMAINS: 'ascreit.com -> http://nginx'
-      # STAGE: 'local'
-      STAGE: 'production'
-      # FORCE_RENEW: 'true'
-    volumes:
-      - /data/ssl_certs:/var/lib/https-portal
+  # https-portal:
+  #   image: steveltn/https-portal:1
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   links:
+  #     - nginx
+  #   restart: always
+  #   environment:
+  #     DOMAINS: 'ascreit.com -> http://nginx'
+  #     # STAGE: 'local'
+  #     STAGE: 'production'
+  #     # FORCE_RENEW: 'true'
+  #   volumes:
+  #     - /data/ssl_certs:/var/lib/https-portal
 
   redis:
     image: redis:5.0.3-alpine

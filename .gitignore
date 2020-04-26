@@ -1,5 +1,7 @@
 .env
 __pycache__
-logs/*
 node_modules
 package.json
+logs/celery/*
+logs/django/*
+!.gitkeep

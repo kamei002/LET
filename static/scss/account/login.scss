@@ -52,19 +52,6 @@
                 height: 45px;
             }
         }
-        .valid-error{
-            &:empty{
-                display: none;
-            }
-            background-color: #fbf1f2;
-            color: #dc3545;
-            padding: 1em;
-            border: 1px solid;
-            ul{
-                padding: 0;
-                margin: 0;
-            }
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 from learn_word import models
-
+import time
 import logging
 logger = logging.getLogger("app")
 
@@ -40,7 +40,7 @@ class Scraper:
         logger.debug(audio_path)
         word_obj.audio_path = audio_path
         word_obj.save()
-        # time.sleep(1)
+        time.sleep(3)
 
     def begin(self):
         words = models.EnglishWord.get_scrapable_word()

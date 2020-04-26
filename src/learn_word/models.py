@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger("app")
 
 
-def show_study_words(category_id=None):
+def show_study_words(limit=100, category_id=None):
 
     logger.debug("show_study_words")
     word_list = EnglishWord.objects.all()
@@ -20,7 +20,7 @@ def show_study_words(category_id=None):
 
     word_list = word_list.order_by(
         "word_summary__display_count"
-    )[:10]
+    )[:limit]
 
     return word_list
 
@@ -50,7 +50,7 @@ class WordCategory(models.Model):
             return True
         child_categories = self.get_children()
         for category in child_categories:
-            if not category.has_word_relation():
+            if category.has_word_relation():
                 return True
         return False
 
@@ -100,17 +100,15 @@ class WordLog(models.Model):
     class Meta:
         db_table = 'word_log'
 
-    def find_one(user_id, english_word_id):
-        result = WordLog.objects.filter(english_word_id=english_word_id).first()
-        if result is None:
-            result = WordLog(user_id=user_id, english_word_id=english_word_id)
-            result.save()
+    def get_one(user_id, english_word_id):
+        result = WordLog(user_id=user_id, english_word_id=english_word_id)
+        result.save()
         return result
 
 
 class WordLearnSetting(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-    display_num = models.IntegerField(default=10)
+    learn_num = models.IntegerField(default=100)
     default_unknown = models.BooleanField(default=False)
 
     class Meta:

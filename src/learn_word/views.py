@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 
 from learn_word import models
 from config import tasks
@@ -42,24 +43,6 @@ class WordList(LoginRequiredMixin, APIView):
 
     def post(self, request):
         return redirect('/account/dashboard')
-
-
-class Learn(LoginRequiredMixin, APIView):
-
-    renderer_classes = [TemplateHTMLRenderer]
-
-    def get(self, request):
-        user = request.user
-        study_words = models.show_study_words()
-        study_word = study_words[0]
-        word_summary = models.WordSummary.find_one(user.id, study_word.id)
-        word_summary.display_count += 1
-        word_summary.save()
-        word_log = models.WordLog.find_one(user_id=user.id, english_word_id=study_word.id)
-
-        logger.debug(study_word)
-        logger.debug(word_summary)
-        return Response({'study_word': study_word, "word_summary": word_summary, "word_log": word_log}, template_name='word/learn.html')
 
 
 class Star(LoginRequiredMixin, APIView):
@@ -109,10 +92,10 @@ def category(request):
     if category_id:
         this_category = models.WordCategory.objects.get(pk=category_id)
         path = f'{this_category.path}{this_category.id}/'
-        this_category.learn_url = f'/word/category/{this_category.id}/learn'
+        this_category.learn_url = f'/word/learn?category_id={this_category.id}'
     else:
         this_category = models.WordCategory(name='All categories')
-        this_category.learn_url = f'/word/'
+        this_category.learn_url = f'/word/learn'
 
     categories = models.WordCategory.get_category(path=path)
     for category in categories:
@@ -122,23 +105,40 @@ def category(request):
     return render(request, template_name='word/category.html', context=data)
 
 @login_required
-def learn_category(request, category_id):
-    if not category_id:
-        return redirect('/account/dashboard')
+def learn(request):
+    index = request.GET.get("index", 0)
+    category_id = request.GET.get("category_id", None)
+    index = int(index)
     user = request.user
-    logger.debug(f'category_id: {category_id}')
-    study_words = models.show_study_words(category_id)
-    study_word = study_words[0]
+    setting = models.WordLearnSetting.find_by_user_id(user.id)
+    limit = setting.learn_num
+
+    logger.debug(f"index:{index}")
+    key = f'{user.id}_study_words_{category_id}'
+    if index == 0:
+        logger.debug("index==0")
+        cache.delete(key)
+
+    study_words = cache.get(key)
+    logger.info(study_words)
+    if(not study_words):
+        study_words = models.show_study_words(category_id=category_id, limit=limit)
+        cache.set(key, study_words, timeout=25)
+
+    if(study_words.count() < index+1):
+        cache.persist(key)
+        return redirect('/account/dashboard')
+
+    study_word = study_words[index]
     word_summary = models.WordSummary.find_one(user.id, study_word.id)
     word_summary.display_count += 1
     word_summary.save()
-    word_log = models.WordLog.find_one(user_id=user.id, english_word_id=study_word.id)
+    word_log = models.WordLog.get_one(user_id=user.id, english_word_id=study_word.id)
 
     logger.debug(study_word)
     logger.debug(word_summary)
-    data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log}
+    data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log, "index": index, "category_id": category_id}
     return render(request, template_name='word/learn.html', context=data)
-
 
 @login_required
 def scrap(request):

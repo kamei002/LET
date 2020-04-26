@@ -41,6 +41,7 @@
 }
 
 .card-wrap .learn-card .content .mean {
+  font-size: 1.5em;
   padding: 1em;
 }
 
@@ -50,4 +51,18 @@
 
 .button-area {
   margin: 1em;
+}
+
+.answer {
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 600px;
+  text-align: center;
+  margin: 10px auto;
+}
+
+.answer #answer {
+  width: calc(100% - 24px);
+  padding: 12px;
+  font-size: 1em;
 }

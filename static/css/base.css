@@ -173,3 +173,25 @@ body {
 .pointer-area {
   cursor: pointer;
 }
+
+.valid-error {
+  background-color: #fbf1f2;
+  color: #dc3545;
+  padding: 1em;
+  border: 1px solid;
+}
+
+.valid-error:empty {
+  display: none;
+}
+
+.valid-error ul {
+  padding: 0;
+  margin: 0;
+}
+
+.error {
+  color: #262626;
+  background: #FFEBE8;
+  border: 2px solid #990000;
+}

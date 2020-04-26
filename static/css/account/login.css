@@ -50,19 +50,3 @@
   width: 100%;
   height: 45px;
 }
-
-.login-container .field-wrap .valid-error {
-  background-color: #fbf1f2;
-  color: #dc3545;
-  padding: 1em;
-  border: 1px solid;
-}
-
-.login-container .field-wrap .valid-error:empty {
-  display: none;
-}
-
-.login-container .field-wrap .valid-error ul {
-  padding: 0;
-  margin: 0;
-}
