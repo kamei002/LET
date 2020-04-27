@@ -111,7 +111,7 @@ def learn(request):
     index = int(index)
     try:
         category_id = int(category_id)
-    except ValueError:
+    except Exception:
         logger.error(f"wired category_id:{category_id}")
         category_id = None
 
