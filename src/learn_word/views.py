@@ -107,10 +107,14 @@ def category(request):
 @login_required
 def learn(request):
     index = request.GET.get("index", 0)
-    category_id = request.GET.get("category_id", None)
+    category_id = request.GET.get("category_id", 'None')
     index = int(index)
     try:
-        category_id = int(category_id)
+        if category_id == 'None':
+            category_id = None
+        else:
+            category_id = int(category_id)
+
     except Exception:
         logger.error(f"wired category_id:{category_id}")
         category_id = None
@@ -145,6 +149,38 @@ def learn(request):
     logger.debug(word_summary)
     data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log, "index": index, "category_id": category_id}
     return render(request, template_name='word/learn.html', context=data)
+
+@login_required
+def learn_result(request):
+    user = request.user
+    setting = models.WordLearnSetting.find_by_user_id(user.id)
+    limit = setting.learn_num
+    word_logs = models.WordLog.get_learn_result(user_id=user.id, limit=limit)
+    for word in word_logs:
+        english_word = word.english_word
+        word_summary = models.WordSummary.find_one(
+            user_id=user.id,
+            english_word_id=english_word.id
+        )
+        word.display_count = word_summary.display_count
+
+    category_id = request.GET.get("category_id", 'None')
+    if(category_id == 'None'):
+        learn_url = f'/word/learn?category_id={category_id}'
+    else:
+        learn_url = f'/word/learn'
+
+    number_of_today_study = models.WordLog.number_of_today_study(user.id)
+
+    data = {
+        'category_id': category_id,
+        'learn_url': learn_url,
+        'word_logs': word_logs,
+        'number_of_today_study': number_of_today_study
+    }
+
+    return render(request, template_name='word/learn_result.html', context=data)
+
 
 @login_required
 def scrap(request):

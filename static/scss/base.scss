@@ -68,6 +68,17 @@ body{
 }
 
 .button{
+    &:hover{
+        opacity:0.5;
+        transition:all 0.2s linear;
+    }
+    a{
+        &:link { color: #fff; }
+        &:visited { color: #fff; }
+        &:hover { color: #fff; }
+        &:active { color: #fff; }
+        text-decoration: none;
+    }
     &.blue{
         background-color: #007bff;
         border-color: #007bff;

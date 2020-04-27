@@ -5,6 +5,7 @@ const app = new Vue({
         errorAnswer: false,
         isChecked: false,
         meanHide: true,
+        sending: false,
         id: 0,
       },
     methods: {
@@ -45,7 +46,13 @@ const app = new Vue({
             });
         },
         next(){
+            if(app.sending === true){
+                console.log("Now Sending...")
+                return
+            }
+            app.sending=true
             if(this.hasErrorAnswer()){
+                app.sending=false
                 return
             }
             // location.reload();

@@ -23,6 +23,7 @@
                     </i>
                 </div>
                 <div>
+                    {{word_summary.display_count}}回表示
                     <i v-on:click="toggleStar"
                         v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }"
                         class="fa" aria-hidden="true"></i>

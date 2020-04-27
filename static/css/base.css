@@ -82,6 +82,31 @@ body {
   cursor: pointer;
 }
 
+.button:hover {
+  opacity: 0.5;
+  transition: all 0.2s linear;
+}
+
+.button a {
+  text-decoration: none;
+}
+
+.button a:link {
+  color: #fff;
+}
+
+.button a:visited {
+  color: #fff;
+}
+
+.button a:hover {
+  color: #fff;
+}
+
+.button a:active {
+  color: #fff;
+}
+
 .button.blue {
   background-color: #007bff;
   border-color: #007bff;

@@ -3,6 +3,7 @@ from account.models.users import User
 from django.utils import timezone
 from django.db.models import Q
 
+import datetime
 import logging
 logger = logging.getLogger("app")
 
@@ -102,6 +103,25 @@ class WordLog(models.Model):
         result = WordLog(user_id=user_id, english_word_id=english_word_id)
         result.save()
         return result
+
+    def get_learn_result(user_id, limit):
+        result = WordLog.objects.filter(
+            user_id=user_id
+        ).order_by(
+            'created_at'
+        ).reverse(
+
+        ).select_related('english_word')[:limit]
+        logger.debug(result.query)
+        return result
+
+    def number_of_today_study(user_id):
+        result = WordLog.objects.filter(
+            user_id=user_id,
+            created_at__gt=datetime.date.today()
+        )
+        logger.debug(result.query)
+        return result.count()
 
 
 class WordLearnSetting(models.Model):

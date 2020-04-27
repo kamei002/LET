@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static_cb %}
+
+{% block head %}
+    <!-- <link href="{% static 'css/word/learn.css' %}" rel="stylesheet"> -->
+{% endblock %}
+{% block bottom %}
+    <!-- <script type="text/javascript" src="{% static 'js/word/learn.js' %}"></script> -->
+{% endblock %}
+{% block content %}
+
+<div class="flex-center">
+    <h2>Today's study: <span>{{number_of_today_study}}</span> words</h2>
+</div>
+
+<div class="flex-center">
+    <div class="button blue"><a href="/account/dashboard/">Back to home</a></div>
+    <div class="button green"><a href="{{learn_url}}">Continue Study</a></div>
+</div>
+
+<div class="flex-center">
+    <table class="normal-table">
+        <caption>Learned words</caption>
+        <thead>
+            <th>word</th>
+            <th>count</th>
+        </thead>
+        <tbody>
+        {% for word_log in word_logs %}
+            <tr class="{% if word_log.is_unknown %}error{% endif %}">
+                <td>{{word_log.english_word.word}}</td>
+                <td>{{word_log.display_count}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
