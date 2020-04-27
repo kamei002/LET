@@ -109,6 +109,12 @@ def learn(request):
     index = request.GET.get("index", 0)
     category_id = request.GET.get("category_id", None)
     index = int(index)
+    try:
+        category_id = int(category_id)
+    except ValueError:
+        logger.error(f"wired category_id:{category_id}")
+        category_id = None
+
     user = request.user
     setting = models.WordLearnSetting.find_by_user_id(user.id)
     limit = setting.learn_num

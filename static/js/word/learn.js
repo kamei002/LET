@@ -49,7 +49,10 @@ const app = new Vue({
                 return
             }
             // location.reload();
-            const url = `/word/learn?index=${app.index+1}&category_id=${app.categoryId}`
+            let url = `/word/learn?index=${app.index+1}`
+            if(Number(app.categoryId)){
+                url += `&category_id=${app.categoryId}`
+            }
             location.replace(url)
         },
         hasErrorAnswer(){
@@ -102,6 +105,16 @@ const app = new Vue({
             const backspace = 8
             const enter = 13
             if(event.ctrlKey || event.metaKey){
+                // _
+                if(event.keyCode === 189){
+                    app.toggleStar()
+                }
+                // /
+                if(event.keyCode === 191){
+                    document.querySelector("#audio").play()
+                    // $("#audio").play()
+                    // app.sound()
+                }
                 if(event.keyCode === shift){
                     app.toggleVisible()
                 }

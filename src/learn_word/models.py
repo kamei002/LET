@@ -8,8 +8,6 @@ logger = logging.getLogger("app")
 
 
 def show_study_words(limit=100, category_id=None):
-
-    logger.debug("show_study_words")
     word_list = EnglishWord.objects.all()
 
     if category_id:

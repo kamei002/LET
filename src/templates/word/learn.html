@@ -17,17 +17,21 @@
                 <div>
                     {{ study_word.word }}
                     <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
-                        <audio class="contentAudio" controls="controls" preload="none">
+                        <audio class="contentAudio" controls="controls" preload="none" id="audio">
                             <source src="{{study_word.audio_path}}" type="audio/mpeg">
                         </audio>
                     </i>
                 </div>
                 <div>
-                    <i v-on:click="toggleStar" v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }" class="fa" aria-hidden="true"></i>
+                    <i v-on:click="toggleStar"
+                        v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }"
+                        class="fa" aria-hidden="true"></i>
                 </div>
             </div>
             <div v-on:click="toggleVisible" class="content">
-                <div v-bind:class="{'hide': meanHide}" class="mean">{{ study_word.mean }}</div>
+                <div
+                    v-bind:class="{'hide': meanHide}"
+                    class="mean">{{ study_word.mean }}</div>
 
                 <input id="server_params" type="hidden"
                     data-is-checked={{word_summary.is_checked}}
@@ -44,7 +48,10 @@
 
     <div class="button-area">
         <div class="answer">
-            <input type="text" id="answer" placeholder="Answer here" ref="answer" v-bind:class="{ 'error': errorAnswer}" autocomplete="off">
+            <input type="text" id="answer" placeholder="Answer here"
+                ref="answer"
+                v-bind:class="{ 'error': errorAnswer}"
+                autocomplete="off">
         </div>
         <div v-on:click="next" class="button green">わかった</div>
         <div v-on:click="markedUnknown" class="button red">わからなかった</div>
@@ -53,6 +60,26 @@
     <form method="get" id="form" action="">
         <input type="hidden" id="index" name="index">
     </form>
-
+</div>
+<div class="flex-center">
+    <table class="normal-table">
+        <caption>Shortcut Keys</caption>
+        <thead>
+            <th>Ctrl + _</th>
+            <th>Ctrl + /</th>
+            <th>Ctrl + Shift</th>
+            <th>Ctrl + Enter</th>
+            <th>Ctrl + Backspace</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>チェック</td>
+                <td>音声再生</td>
+                <td>日本語訳表示</td>
+                <td>わかった</td>
+                <td>わからなかった</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {% endblock %}

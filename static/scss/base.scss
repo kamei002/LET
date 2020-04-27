@@ -189,3 +189,14 @@ body{
     background:#FFEBE8;
     border:2px solid #990000;
 }
+
+.normal-table{
+    margin: 1em;
+    border: 1px solid;
+    border-collapse: collapse;
+    th,td{
+        padding: 0.5em;
+        border: 1px solid;
+    }
+
+}
