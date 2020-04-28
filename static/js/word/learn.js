@@ -116,18 +116,21 @@ const app = new Vue({
                 if(event.keyCode === 189){
                     app.toggleStar()
                 }
-                // /
-                if(event.keyCode === 191){
+                // ↓
+                if(event.keyCode === 40){
                     document.querySelector("#audio").play()
                 }
-                if(event.keyCode === shift){
+                // ↑
+                if(event.keyCode === 38){
                     app.toggleVisible()
                 }
-                if(event.keyCode === enter){
+                // ->
+                if(event.keyCode === 39){
                     console.log("わかった")
                     app.next()
                 }
-                else if(event.keyCode === backspace){
+                // <-
+                else if(event.keyCode === 37){
                     console.log("わからない")
                     app.markedUnknown()
 
