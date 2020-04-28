@@ -7,7 +7,6 @@ import datetime
 import logging
 logger = logging.getLogger("app")
 
-
 def show_study_words(limit=100, category_id=None):
     word_list = EnglishWord.objects.all()
 
@@ -18,7 +17,7 @@ def show_study_words(limit=100, category_id=None):
         word_list = word_list.filter(category_id__in=category_ids)
 
     word_list = word_list.order_by(
-        "word_summary__display_count"
+        "word_summary__order"
     )[:limit]
 
     return word_list
@@ -71,6 +70,20 @@ class EnglishWord(models.Model):
             Q(mean__isnull=True) | Q(audio_path__isnull=True)
         )
 
+    def calc_learn_order_point(self, user_id):
+        word_logs = WordLog.objects.filter(english_word_id=self.id, user_id=user_id)
+        point = 0
+        count = word_logs.count()
+        point -= count
+
+        if count == 0:
+            point += 100
+
+        unknown_count = word_logs.filter(is_unknown=True).count()
+        point += unknown_count
+
+        return point
+
 
 class WordSummary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='word_summaries')
@@ -79,6 +92,7 @@ class WordSummary(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     display_count = models.IntegerField(default=0)
     is_checked = models.BooleanField(default=False)
+    order = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'word_summary'
@@ -90,6 +104,11 @@ class WordSummary(models.Model):
             result.save()
         return result
 
+    def count_up(self):
+        self.display_count += 1
+        self.order += 1
+        self.save()
+
 class WordLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='word_logs')
     english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='word_logs')
@@ -99,8 +118,15 @@ class WordLog(models.Model):
     class Meta:
         db_table = 'word_log'
 
-    def get_one(user_id, english_word_id):
+    def create(user_id, english_word_id):
+
         result = WordLog(user_id=user_id, english_word_id=english_word_id)
+        word_summary = result.get_word_summary()
+        word_summary.count_up()
+        exists_log = WordLog.objects.filter(user_id=user_id, english_word_id=english_word_id).exists()
+        if not exists_log:
+            word_summary.order += 100
+            word_summary.save()
         result.save()
         return result
 
@@ -123,6 +149,18 @@ class WordLog(models.Model):
         logger.debug(result.query)
         return result.count()
 
+    def mark_unknown(self):
+        self.is_unknown = True
+        self.save()
+        word_summary = self.get_word_summary()
+        word_summary.order -= 1
+        word_summary.save()
+
+    def get_word_summary(self):
+        return WordSummary.find_one(
+            user_id=self.user_id,
+            english_word_id=self.english_word_id
+        )
 
 class WordLearnSetting(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
