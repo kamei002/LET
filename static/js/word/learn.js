@@ -4,7 +4,7 @@ const app = new Vue({
     data: {
         errorAnswer: false,
         isChecked: false,
-        meanHide: true,
+        meanShow: false,
         sending: false,
         id: 0,
       },
@@ -13,7 +13,7 @@ const app = new Vue({
             e.currentTarget.querySelector("audio").play()
         },
         toggleVisible(){
-            this.meanHide = !this.meanHide
+            this.meanShow = !this.meanShow
         },
         toggleStar(e){
 
@@ -119,8 +119,6 @@ const app = new Vue({
                 // /
                 if(event.keyCode === 191){
                     document.querySelector("#audio").play()
-                    // $("#audio").play()
-                    // app.sound()
                 }
                 if(event.keyCode === shift){
                     app.toggleVisible()
@@ -139,23 +137,3 @@ const app = new Vue({
         });
     }
 })
-// $(function() {
-//     $("#answer").focus()
-//     $("#answer").keydown(function(event) {
-//         console.log(event.keyCode)
-//         // event.ctrlKey = Ctr,  event.metaKey = Command(Mac)
-//         const esc = 27
-//         const backspace = 8
-//         const enter = 13
-//         if(event.ctrlKey || event.metaKey){
-//             if(event.keyCode === enter){
-//                 console.log("understand")
-//             }
-//             else if(event.keyCode === backspace){
-//                 console.log("unknown")
-
-//             }
-
-//         }
-//     });
-// });

@@ -43,10 +43,11 @@
 .card-wrap .learn-card .content .mean {
   font-size: 1.5em;
   padding: 1em;
+  color: rgba(0, 0, 0, 0);
 }
 
-.card-wrap .learn-card .content .mean.hide {
-  color: rgba(0, 0, 0, 0);
+.card-wrap .learn-card .content .mean.show {
+  color: #000;
 }
 
 .button-area {

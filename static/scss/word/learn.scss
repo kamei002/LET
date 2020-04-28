@@ -39,8 +39,9 @@
             .mean{
                 font-size: 1.5em;
                 padding: 1em;
-                &.hide{
-                    color: rgba(0, 0, 0, 0);
+                color: rgba(0, 0, 0, 0);
+                &.show{
+                    color: #000;
                 }
             }
 

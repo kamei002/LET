@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger("app")
 
 @app.task()
-def scrap_weblio():
+def scrape_weblio():
     scraper = Scraper()
     scraper.begin()
     return 'おわったよ'

@@ -13,7 +13,7 @@ from django.core.cache import cache
 from learn_word import models
 from config import tasks
 
-# from learn_word.tasks.weblio_scrap import Scraper
+# from learn_word.tasks.weblio_scrape import Scraper
 import logging
 logger = logging.getLogger("app")
 
@@ -23,7 +23,7 @@ class WordList(LoginRequiredMixin, APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
     def get(self, request):
-        # logger.debug("scrap")
+        # logger.debug("scrape")
         # s = Scraper()
         # s.begin()
 
@@ -123,10 +123,8 @@ def learn(request):
     setting = models.WordLearnSetting.find_by_user_id(user.id)
     limit = setting.learn_num
 
-    logger.debug(f"index:{index}")
     key = f'{user.id}_study_words_{category_id}'
     if index == 0:
-        logger.debug("index==0")
         cache.delete(key)
 
     study_words = cache.get(key)
@@ -136,8 +134,11 @@ def learn(request):
         cache.set(key, study_words, timeout=25)
 
     if(study_words.count() < index+1):
-        cache.persist(key)
-        return redirect('/account/dashboard')
+        cache.delete(key)
+        if category_id:
+            return redirect(f'/word/learn/result?category_id={category_id}')
+
+        return redirect('/word/learn/result')
 
     study_word = study_words[index]
     word_summary = models.WordSummary.find_one(user.id, study_word.id)
@@ -145,8 +146,6 @@ def learn(request):
     word_summary.save()
     word_log = models.WordLog.get_one(user_id=user.id, english_word_id=study_word.id)
 
-    logger.debug(study_word)
-    logger.debug(word_summary)
     data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log, "index": index, "category_id": category_id}
     return render(request, template_name='word/learn.html', context=data)
 
@@ -166,23 +165,20 @@ def learn_result(request):
 
     category_id = request.GET.get("category_id", 'None')
     if(category_id == 'None'):
-        learn_url = f'/word/learn?category_id={category_id}'
-    else:
         learn_url = f'/word/learn'
-
-    number_of_today_study = models.WordLog.number_of_today_study(user.id)
+    else:
+        learn_url = f'/word/learn?category_id={category_id}'
 
     data = {
         'category_id': category_id,
         'learn_url': learn_url,
         'word_logs': word_logs,
-        'number_of_today_study': number_of_today_study
     }
 
     return render(request, template_name='word/learn_result.html', context=data)
 
 
 @login_required
-def scrap(request):
-    tasks.scrap_weblio.delay()
+def scrape(request):
+    tasks.scrape_weblio.delay()
     return render(request, status=status.HTTP_200_OK)

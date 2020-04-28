@@ -8,6 +8,8 @@
 
 {% block bottom %}
 {% endblock %}
+
+<h2>Today's study: <span>{{number_of_today_study}}</span> words</h2>
 <div class="contents-area">
     <div class="card-wrap">
         <div class="card">
@@ -36,19 +38,21 @@
                 </div>
             </a>
         </div>
+        {% if user.is_superuser %}
         <div class="card">
-            <a href="/word/api/scrap" class="pointer-area" id="scrap">
+            <a href="/word/api/scrape" class="pointer-area" id="scrape">
                 <div class="title">
-                    Scrap
+                    Scrape
                 </div>
                 <div class="contents">
                     <div class="sambnail">
-                        <img src="{% static 'images/scrap.jpg' %}">
+                        <img src="{% static 'images/scrape.jpg' %}">
 
                     </div>
                 </div>
             </a>
         </div>
+        {% endif %}
     </div>
 </div>
 

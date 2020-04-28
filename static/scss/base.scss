@@ -158,13 +158,6 @@ body{
             word-break: break-all;
             height: calc(100% - 3em);
             background-color: rgba(0, 123, 255, 0.25);
-            .mean{
-                padding: 1em;
-                &.hide{
-                    color: rgba(0, 0, 0, 0);
-                }
-                height: calc(100% - 2em);
-            }
             .button-area{
                 height: 2em;
                 background-color: #fff;

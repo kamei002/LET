@@ -10,6 +10,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from learn_word import models
+
 import logging
 logger = logging.getLogger("app")
 
@@ -79,4 +81,9 @@ class Dashboard(LoginRequiredMixin, APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
     def get(self, request):
-        return Response(template_name='account/dashboard.html')
+        user = request.user
+        number_of_today_study = models.WordLog.number_of_today_study(user.id)
+        data = {
+            'user': user, 'number_of_today_study': number_of_today_study
+        }
+        return Response(data, template_name='account/dashboard.html')
