@@ -15,7 +15,7 @@
             <div class="title">
 
                 <div>
-                    {{ study_word.word }}
+                    <span class="order">{{study_word.order}}</span>{{ study_word.word }}
                     <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
                         <audio class="contentAudio" controls="controls" preload="none" id="audio">
                             <source src="{{study_word.audio_path}}" type="audio/mpeg">
@@ -61,6 +61,9 @@
     <form method="get" id="form" action="">
         <input type="hidden" id="index" name="index">
     </form>
+</div>
+<div class="flex-center">
+    <div>{{index|add:1}}/{{word_count}}</div>
 </div>
 <div class="flex-center">
     <table class="normal-table">

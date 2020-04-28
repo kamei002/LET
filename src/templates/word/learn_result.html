@@ -18,12 +18,14 @@
     <table class="normal-table">
         <caption>Learned words</caption>
         <thead>
+            <th>No</th>
             <th>word</th>
             <th>count</th>
         </thead>
         <tbody>
         {% for word_log in word_logs %}
             <tr class="{% if word_log.is_unknown %}error{% endif %}">
+                <td>{{word_log.english_word.order}}</td>
                 <td>{{word_log.english_word.word}}</td>
                 <td>{{word_log.display_count}}</td>
             </tr>

@@ -133,7 +133,8 @@ def learn(request):
         study_words = models.show_study_words(category_id=category_id, limit=limit)
         cache.set(key, study_words, timeout=25)
 
-    if(study_words.count() < index+1):
+    word_count = study_words.count()
+    if(word_count < index+1):
         cache.delete(key)
         if category_id:
             return redirect(f'/word/learn/result?category_id={category_id}')
@@ -146,7 +147,14 @@ def learn(request):
     word_summary.save()
     word_log = models.WordLog.get_one(user_id=user.id, english_word_id=study_word.id)
 
-    data = {'study_word': study_word, "word_summary": word_summary, "word_log": word_log, "index": index, "category_id": category_id}
+    data = {
+        'study_word': study_word,
+        "word_summary": word_summary,
+        "word_log": word_log,
+        "index": index,
+        "category_id": category_id,
+        "word_count": word_count,
+    }
     return render(request, template_name='word/learn.html', context=data)
 
 @login_required
