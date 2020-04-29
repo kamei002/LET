@@ -23,6 +23,7 @@ services:
       - ./logs:/logs
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
+      - ./static:/static
     expose:
       - "3031"
     depends_on:
