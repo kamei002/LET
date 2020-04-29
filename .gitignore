@@ -4,4 +4,5 @@ node_modules
 package.json
 logs/celery/*
 logs/django/*
+static/sounds/*
 !.gitkeep
