@@ -127,12 +127,12 @@ def learn(request):
         cache.delete(key)
 
     study_words = cache.get(key)
-    logger.info(study_words)
     if(not study_words):
-        study_words = models.show_study_words(category_id=category_id, limit=limit)
+        study_words = models.show_study_words(user_id=user.id, category_id=category_id, limit=limit)
         cache.set(key, study_words, timeout=25)
+        logger.info("get study_words")
 
-    word_count = study_words.count()
+    word_count = len(study_words)
     if(word_count < index+1):
         cache.delete(key)
         if category_id:

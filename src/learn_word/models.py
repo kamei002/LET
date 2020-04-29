@@ -7,18 +7,30 @@ import datetime
 import logging
 logger = logging.getLogger("app")
 
-def show_study_words(limit=100, category_id=None):
-    word_list = EnglishWord.objects.all()
+def show_study_words(user_id, limit=100, category_id=None):
+    sql = "SELECT english_word.* FROM english_word " \
+        + "LEFT JOIN word_summary ON english_word.id = word_summary.english_word_id " \
+        + f"AND word_summary.user_id = {user_id} "
 
     if category_id:
-        category = WordCategory.objects.get(pk=category_id)
-        category_ids = set(category.get_children().values_list('id', flat=True))
-        category_ids.add(category_id)
-        word_list = word_list.filter(category_id__in=category_ids)
+        sql += f"WHERE english_word.category_id = {category_id} "
 
-    word_list = word_list.order_by(
-        "word_summary__order"
-    )[:limit]
+    sql += f"ORDER BY word_summary.order LIMIT {limit}"
+
+    word_list = EnglishWord.objects.raw(sql)
+    logger.debug(word_list)
+
+    # word_list = EnglishWord.objects.filter(
+    #     word_summary__user_id=user_id
+    # )
+    # if category_id:
+    #     word_list = word_list.filter(category_id=category_id)
+
+    # word_list = word_list.order_by(
+    #     "word_summary__order"
+    # )[:limit]
+
+    # logger.debug(word_list.query)
 
     return word_list
 
