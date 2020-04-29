@@ -86,7 +86,6 @@ class UnknownWord(LoginRequiredMixin, APIView):
 @login_required
 def category(request):
     category_id = request.GET.get('category_id')
-    logger.debug(category_id)
     path = '/'
     if category_id:
         this_category = models.WordCategory.objects.get(pk=category_id)
@@ -129,6 +128,7 @@ def learn(request):
     study_words = cache.get(key)
     if(not study_words):
         study_words = models.show_study_words(user_id=user.id, category_id=category_id, limit=limit)
+        study_words = list(study_words)
         cache.set(key, study_words, timeout=60*60*3)
         logger.info("get study_words")
 

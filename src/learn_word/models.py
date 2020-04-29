@@ -158,7 +158,6 @@ class WordLog(models.Model):
             user_id=user_id,
             created_at__gt=datetime.date.today()
         )
-        logger.debug(result.query)
         return result.count()
 
     def mark_unknown(self):
