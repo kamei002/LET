@@ -129,7 +129,7 @@ def learn(request):
     study_words = cache.get(key)
     if(not study_words):
         study_words = models.show_study_words(user_id=user.id, category_id=category_id, limit=limit)
-        cache.set(key, study_words, timeout=25)
+        cache.set(key, study_words, timeout=60*60*3)
         logger.info("get study_words")
 
     word_count = len(study_words)
