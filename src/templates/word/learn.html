@@ -29,20 +29,27 @@
                         class="fa" aria-hidden="true"></i>
                 </div>
             </div>
-            <div v-on:click="toggleVisible" class="content">
-                <div
-                    v-bind:class="{'show': meanShow}"
-                    class="mean">{{ study_word.mean }}</div>
+            <div v-on:click="toggleVisible" class="content" v-bind:class="{'show': meanShow}">
+                <div class="wrapper">
+                    <div
+                        class="mean">{{ study_word.mean }}</div>
+                    <div class="image flex-center">
+                        {% if study_word.image_path %}
+                        <img src="{{ study_word.image_path }}">
+                        {% endif %}
+                    </div>
 
-                <input id="server_params" type="hidden"
-                    data-is-checked={{word_summary.is_checked}}
-                    data-word-summary-id={{word_summary.id}}
-                    data-word-log-id={{word_log.id}}
-                    data-word-word={{study_word.word}}
-                    data-word-audio-path={{study_word.audio_path}}
-                    data-category-id={{category_id}}
-                    data-index={{index}}
-                >
+                    <input id="server_params" type="hidden"
+                        data-is-checked={{word_summary.is_checked}}
+                        data-word-summary-id={{word_summary.id}}
+                        data-word-log-id={{word_log.id}}
+                        data-word-word={{study_word.word}}
+                        data-word-audio-path={{study_word.audio_path}}
+                        data-category-id={{category_id}}
+                        data-index={{index}}
+                    >
+
+                </div>
             </div>
         </div>
     </div>

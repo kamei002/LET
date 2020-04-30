@@ -68,6 +68,7 @@ class EnglishWord(models.Model):
     word = models.CharField(max_length=255)
     mean = models.CharField(max_length=255, null=True)
     audio_path = models.CharField(max_length=255, null=True)
+    image_path = models.CharField(max_length=255, null=True)
     order = models.IntegerField(null=True, default=0)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

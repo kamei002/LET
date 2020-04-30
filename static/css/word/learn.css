@@ -52,14 +52,17 @@
   background-color: rgba(0, 123, 255, 0.25);
 }
 
+.card-wrap .learn-card .content .wrapper {
+  visibility: hidden;
+}
+
+.card-wrap .learn-card .content.show .wrapper {
+  visibility: visible;
+}
+
 .card-wrap .learn-card .content .mean {
   font-size: 1.5em;
   padding: 1em;
-  color: rgba(0, 0, 0, 0);
-}
-
-.card-wrap .learn-card .content .mean.show {
-  color: #000;
 }
 
 .button-area {

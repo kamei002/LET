@@ -5,4 +5,5 @@ package.json
 logs/celery/*
 logs/django/*
 static/sounds/*
+static/word-image/*
 !.gitkeep
