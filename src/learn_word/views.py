@@ -11,9 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
 from learn_word import models
-from config import tasks
 
-# from learn_word.tasks.weblio_scrape import Scraper
 import logging
 logger = logging.getLogger("app")
 
@@ -23,9 +21,6 @@ class WordList(LoginRequiredMixin, APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
     def get(self, request):
-        # logger.debug("scrape")
-        # s = Scraper()
-        # s.begin()
 
         user = request.user
         word_list = models.EnglishWord.objects.filter(created_by_id=user.id)
@@ -181,9 +176,3 @@ def learn_result(request):
     }
 
     return render(request, template_name='word/learn_result.html', context=data)
-
-
-@login_required
-def scrape(request):
-    tasks.scrape_weblio.delay()
-    return render(request, status=status.HTTP_200_OK)

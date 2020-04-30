@@ -47,18 +47,7 @@ def get_img():
     for word_obj in tqdm(word_obj_list):
         word = word_obj.word
         url = f'https://www.shutterstock.com/search/{word}'
-        headers = {
-            'user-agent': 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
-            'cache-control': 'max-age=0',
-            'dnt': '1',
-            'referer': 'https://www.google.com/',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'cross-site',
-        }
+        headers = get_scrape_header()
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
         try:
@@ -75,3 +64,44 @@ def get_img():
 
         except Exception as e:
             logger.exception(f'error_message: {e}')
+
+def get_mean():
+    word_obj_list = word_models.EnglishWord.get_scrapable_word()
+    for word_obj in tqdm(word_obj_list):
+        word = word_obj.word
+        url = f'https://ejje.weblio.jp/content/{word}'
+        headers = get_scrape_header()
+        res = requests.get(url, headers=headers)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        try:
+            mean = soup.select("#summary > div.summaryM.descriptionWrp > table > tbody > tr > td.content-explanation.ej")[0].string
+        except Exception as e:
+            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
+            mean = ' '
+        logger.debug(mean)
+        word_obj.mean = mean
+
+        try:
+            audio_path = soup.select("#audioDownloadPlayUrl")[0]['href']
+        except Exception as e:
+            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
+            audio_path = ' '
+        logger.debug(audio_path)
+        word_obj.audio_path = audio_path
+        word_obj.save()
+        time.sleep(random.random()*10)
+
+def get_scrape_header():
+    headers = {
+        'user-agent': 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
+        'cache-control': 'max-age=0',
+        'dnt': '1',
+        'referer': 'https://www.google.com/',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'cross-site',
+    }
+    return headers

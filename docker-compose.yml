@@ -75,48 +75,48 @@ services:
       - "6379"
 
 
-  worker:
-    restart: always
-    build: ./docker/python/
-    volumes:
-      - ./src:/home/src
-      - ./logs:/logs
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-    depends_on:
-      - python
-    working_dir: /home/src
-    command: celery -A config worker --loglevel=info  --logfile=/logs/celery/worker.log --pidfile=
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_PORT=${DB_PORT}
-      - DJANGO_SETTINGS_MODULE=config.settings.dev
-    user: "${UID}:${GID}"
+  # worker:
+  #   restart: always
+  #   build: ./docker/python/
+  #   volumes:
+  #     - ./src:/home/src
+  #     - ./logs:/logs
+  #     - /etc/passwd:/etc/passwd:ro
+  #     - /etc/group:/etc/group:ro
+  #   depends_on:
+  #     - python
+  #   working_dir: /home/src
+  #   command: celery -A config worker --loglevel=info  --logfile=/logs/celery/worker.log --pidfile=
+  #   environment:
+  #     - DB_NAME=${DB_NAME}
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASS=${DB_PASS}
+  #     - DB_PORT=${DB_PORT}
+  #     - DJANGO_SETTINGS_MODULE=config.settings.dev
+  #   user: "${UID}:${GID}"
 
 
-  monitor:
-    restart: always
-    build: ./docker/python/
-    volumes:
-      - ./src:/home/src
-      - ./logs:/logs
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-    depends_on:
-      - worker
-    working_dir: /home/src
-    command: flower -A config --port=5555 --broker=redis://redis:6379
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_PORT=${DB_PORT}
-      - DJANGO_SETTINGS_MODULE=config.settings.dev
-    user: "${UID}:${GID}"
-    ports:
-      - "5555:5555"
+  # monitor:
+  #   restart: always
+  #   build: ./docker/python/
+  #   volumes:
+  #     - ./src:/home/src
+  #     - ./logs:/logs
+  #     - /etc/passwd:/etc/passwd:ro
+  #     - /etc/group:/etc/group:ro
+  #   depends_on:
+  #     - worker
+  #   working_dir: /home/src
+  #   command: flower -A config --port=5555 --broker=redis://redis:6379
+  #   environment:
+  #     - DB_NAME=${DB_NAME}
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASS=${DB_PASS}
+  #     - DB_PORT=${DB_PORT}
+  #     - DJANGO_SETTINGS_MODULE=config.settings.dev
+  #   user: "${UID}:${GID}"
+  #   ports:
+  #     - "5555:5555"
 
 volumes:
   db-store:

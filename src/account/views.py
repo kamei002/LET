@@ -84,6 +84,6 @@ class Dashboard(LoginRequiredMixin, APIView):
         user = request.user
         number_of_today_study = models.WordLog.number_of_today_study(user.id)
         data = {
-            'user': user, 'number_of_today_study': number_of_today_study
+            'number_of_today_study': number_of_today_study
         }
         return Response(data, template_name='account/dashboard.html')
