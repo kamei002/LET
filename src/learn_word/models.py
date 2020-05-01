@@ -7,6 +7,9 @@ import datetime
 import logging
 logger = logging.getLogger("app")
 
+UNKNOWN_POINT = 11
+VIEW_POINT = 10
+
 def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
     sql = "SELECT english_word.* FROM english_word " \
         + "LEFT JOIN word_summary ON english_word.id = word_summary.english_word_id " \
@@ -91,13 +94,13 @@ class EnglishWord(models.Model):
         word_logs = WordLog.objects.filter(english_word_id=self.id, user_id=user_id)
         point = 0
         count = word_logs.count()
-        point -= count
+        point -= count * VIEW_POINT
 
         if count == 0:
             point += 100
 
         unknown_count = word_logs.filter(is_unknown=True).count()
-        point += unknown_count
+        point += unknown_count * UNKNOWN_POINT
 
         return point
 
@@ -123,7 +126,7 @@ class WordSummary(models.Model):
 
     def count_up(self):
         self.display_count += 1
-        self.order += 1
+        self.order += VIEW_POINT
         self.save()
 
 class WordLog(models.Model):
@@ -169,7 +172,7 @@ class WordLog(models.Model):
         self.is_unknown = True
         self.save()
         word_summary = self.get_word_summary()
-        word_summary.order -= 1
+        word_summary.order -= UNKNOWN_POINT
         word_summary.save()
 
     def get_word_summary(self):
