@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
 from learn_word import models
-
 import logging
 logger = logging.getLogger("app")
 
@@ -155,6 +154,8 @@ def learn_result(request):
     setting = models.WordLearnSetting.find_by_user_id(user.id)
     limit = setting.learn_num
     word_logs = models.WordLog.get_learn_result(user_id=user.id, limit=limit)
+
+    rate = len([l for l in word_logs if l.is_unknown is False]) / len(word_logs) * 100
     for word in word_logs:
         english_word = word.english_word
         word_summary = models.WordSummary.find_one(
@@ -173,6 +174,7 @@ def learn_result(request):
         'category_id': category_id,
         'learn_url': learn_url,
         'word_logs': word_logs,
+        'rate': rate,
     }
 
     return render(request, template_name='word/learn_result.html', context=data)

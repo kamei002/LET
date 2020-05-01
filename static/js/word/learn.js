@@ -115,27 +115,36 @@ const app = new Vue({
                 // _
                 if(event.keyCode === 189){
                     app.toggleStar()
+                    event.stopPropagation();
+                    return false;
                 }
                 // ↓
                 if(event.keyCode === 40){
                     document.querySelector("#audio").play()
+                    event.stopPropagation();
+                    return false;
                 }
                 // ↑
                 if(event.keyCode === 38){
                     app.toggleVisible()
+                    event.stopPropagation();
+                    return false;
                 }
                 // ->
                 if(event.keyCode === 39){
                     console.log("わかった")
                     app.next()
+                    event.stopPropagation();
+                    return false;
                 }
                 // <-
                 else if(event.keyCode === 37){
                     console.log("わからない")
                     app.markedUnknown()
+                    event.stopPropagation();
+                    return false;
 
                 }
-
             }
         });
     }
