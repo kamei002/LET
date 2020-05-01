@@ -206,6 +206,16 @@ body {
   margin: 0;
 }
 
+.field-wrap {
+  margin: 1rem;
+}
+
+.field-wrap .field-contents input {
+  padding-left: 10px;
+  width: calc(100% - 10px);
+  height: 45px;
+}
+
 .error {
   color: #262626;
   background: #FFEBE8;

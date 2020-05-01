@@ -12,13 +12,26 @@
     <h2>{{ this_category.name }}</h2>
     <div class="card-wrap">
         <div class="card">
-            <a href="{{this_category.learn_url}}">
+            <a href="/word/learn?category_id={{this_category.id}}">
                 <div class="title">
                     Learn this category
                 </div>
                 <div class="contents">
                     <div class="sambnail">
                         <img src="{% static 'images/learn.jpg' %}">
+
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/word/learn?category_id={{this_category.id}}&visible_checked=1">
+                <div class="title">
+                    Learn from checked
+                </div>
+                <div class="contents">
+                    <div class="sambnail">
+                        <img src="{% static 'images/star.png' %}">
 
                     </div>
                 </div>

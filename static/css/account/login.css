@@ -40,13 +40,3 @@
   border: 1px solid;
   margin: 1em 0;
 }
-
-.login-container .field-wrap {
-  margin-bottom: 1rem;
-}
-
-.login-container .field-wrap .field-contents input {
-  padding-left: 10px;
-  width: 100%;
-  height: 45px;
-}

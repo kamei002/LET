@@ -7,13 +7,17 @@ import datetime
 import logging
 logger = logging.getLogger("app")
 
-def show_study_words(user_id, limit=100, category_id=None):
+def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
     sql = "SELECT english_word.* FROM english_word " \
         + "LEFT JOIN word_summary ON english_word.id = word_summary.english_word_id " \
         + f"AND word_summary.user_id = {user_id} "
 
+    sql += f"WHERE 1=1 "
     if category_id:
-        sql += f"WHERE english_word.category_id = {category_id} "
+        sql += f"AND english_word.category_id = {category_id} "
+
+    if is_checked:
+        sql += f"AND word_summary.is_checked = true "
 
     sql += f"ORDER BY word_summary.order LIMIT {limit}"
 

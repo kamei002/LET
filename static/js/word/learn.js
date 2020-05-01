@@ -6,6 +6,7 @@ const app = new Vue({
         isChecked: false,
         meanShow: false,
         sending: false,
+        visibleChecked: false,
         id: 0,
       },
     methods: {
@@ -60,6 +61,9 @@ const app = new Vue({
             if(Number(app.categoryId)){
                 url += `&category_id=${app.categoryId}`
             }
+            if(Number(app.visibleChecked)){
+                url += `&visible_checked=${app.visibleChecked}`
+            }
             location.replace(url)
         },
         hasErrorAnswer(){
@@ -91,6 +95,7 @@ const app = new Vue({
         this.word =  params.dataset.wordWord;
         this.categoryId =  params.dataset.categoryId;
         this.index = Number(params.dataset.index);
+        this.visibleChecked =  Number(params.dataset.visibleChecked);
 
         axios.defaults.xsrfCookieName = 'csrftoken'
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"

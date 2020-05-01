@@ -186,6 +186,17 @@ body{
         margin: 0;
     }
 }
+
+.field-wrap{
+    margin: 1rem;
+    .field-contents{
+        input{
+            padding-left: 10px;
+            width: calc(100% - 10px);
+            height: 45px;
+        }
+    }
+}
 .error {
     // padding:12px;
     // font-weight:850;

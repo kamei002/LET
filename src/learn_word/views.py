@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
+
+from learn_word import forms
 from learn_word import models
 import logging
 logger = logging.getLogger("app")
@@ -77,17 +79,48 @@ class UnknownWord(LoginRequiredMixin, APIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class Setting(LoginRequiredMixin, APIView):
+
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request):
+        user = request.user
+        setting = models.WordLearnSetting.find_by_user_id(user.id)
+        form = forms.SettingForm(setting.__dict__)
+        data = {
+            'form': form,
+        }
+        return Response(data=data, template_name='word/setting.html')
+
+    def post(self, request):
+        user = request.user
+        setting = models.WordLearnSetting.find_by_user_id(user.id)
+        logger.debug(request.POST)
+        form = forms.SettingForm(request.POST, instance=setting)
+
+        data = {
+            'form': form,
+        }
+        if not form.is_valid():
+            logger.debug(f'validate error: {form}')
+            return Response(data=data, template_name='word/setting.html')
+
+        form.save()
+
+        return redirect('/account/dashboard')
+
 @login_required
 def category(request):
     category_id = request.GET.get('category_id')
     path = '/'
+    learn_url = f'/word/learn?c=1'
     if category_id:
         this_category = models.WordCategory.objects.get(pk=category_id)
         path = f'{this_category.path}{this_category.id}/'
-        this_category.learn_url = f'/word/learn?category_id={this_category.id}'
+        this_category.learn_url = f'{learn_url}&category_id={this_category.id}'
     else:
         this_category = models.WordCategory(name='All categories')
-        this_category.learn_url = f'/word/learn'
+        this_category.learn_url = learn_url
 
     categories = models.WordCategory.get_category(path=path)
     for category in categories:
@@ -100,6 +133,9 @@ def category(request):
 def learn(request):
     index = request.GET.get("index", 0)
     category_id = request.GET.get("category_id", 'None')
+    visible_checked = request.GET.get("visible_checked", 0)
+    if visible_checked:
+        visible_checked = 1
     index = int(index)
     try:
         if category_id == 'None':
@@ -115,13 +151,18 @@ def learn(request):
     setting = models.WordLearnSetting.find_by_user_id(user.id)
     limit = setting.learn_num
 
-    key = f'{user.id}_study_words_{category_id}'
+    key = f'study_words_user_{user.id}_checked_{visible_checked}_category_{category_id}'
     if index == 0:
         cache.delete(key)
 
     study_words = cache.get(key)
     if(not study_words):
-        study_words = models.show_study_words(user_id=user.id, category_id=category_id, limit=limit)
+        study_words = models.show_study_words(
+            user_id=user.id,
+            category_id=category_id,
+            limit=limit,
+            is_checked=visible_checked
+        )
         study_words = list(study_words)
         cache.set(key, study_words, timeout=60*60*3)
         logger.info("get study_words")
@@ -129,10 +170,12 @@ def learn(request):
     word_count = len(study_words)
     if(word_count < index+1):
         cache.delete(key)
+        url = f'/word/learn/result?limit={word_count}'
         if category_id:
-            return redirect(f'/word/learn/result?category_id={category_id}')
-
-        return redirect('/word/learn/result')
+            url += f'&category_id={category_id}'
+        if visible_checked:
+            url += f'&visible_checked={visible_checked}'
+        return redirect(url)
 
     study_word = study_words[index]
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
@@ -145,14 +188,17 @@ def learn(request):
         "index": index,
         "category_id": category_id,
         "word_count": word_count,
+        "visible_checked": visible_checked,
     }
     return render(request, template_name='word/learn.html', context=data)
 
 @login_required
 def learn_result(request):
     user = request.user
-    setting = models.WordLearnSetting.find_by_user_id(user.id)
-    limit = setting.learn_num
+    # setting = models.WordLearnSetting.find_by_user_id(user.id)
+
+    limit = request.GET.get("limit", 0)
+    limit = int(limit)
     word_logs = models.WordLog.get_learn_result(user_id=user.id, limit=limit)
 
     rate = len([l for l in word_logs if l.is_unknown is False]) / len(word_logs) * 100
@@ -165,10 +211,12 @@ def learn_result(request):
         word.display_count = word_summary.display_count
 
     category_id = request.GET.get("category_id", 'None')
-    if(category_id == 'None'):
-        learn_url = f'/word/learn'
-    else:
-        learn_url = f'/word/learn?category_id={category_id}'
+    visible_checked = request.GET.get("visible_checked", 0)
+    learn_url = f'/word/learn?continue=1'
+    if(category_id != 'None'):
+        learn_url += f'&category_id={category_id}'
+    if visible_checked:
+        learn_url += f'&visible_checked={visible_checked}'
 
     data = {
         'category_id': category_id,
