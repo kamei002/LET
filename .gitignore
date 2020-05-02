@@ -6,4 +6,5 @@ logs/celery/*
 logs/django/*
 static/sounds/*
 static/word-image/*
+static/category-image/*
 !.gitkeep

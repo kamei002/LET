@@ -45,6 +45,7 @@ def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
 class WordCategory(models.Model):
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=255, null=True)
+    image_path = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'word_category'

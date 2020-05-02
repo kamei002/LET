@@ -50,7 +50,10 @@
                         </div>
                         <div class="contents">
                             <div class="sambnail">
-                                <img src="{% static 'images/ielts3500.jpg' %}">
+                                {% if category.image_path %}
+                                <!-- <img src="{% static 'images/ielts3500.jpg' %}"> -->
+                                <img src="{{category.image_path}}">
+                                {% endif %}
 
                             </div>
                         </div>
