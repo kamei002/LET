@@ -113,14 +113,11 @@ class Setting(LoginRequiredMixin, APIView):
 def category(request):
     category_id = request.GET.get('category_id')
     path = '/'
-    learn_url = f'/word/learn?c=1'
     if category_id:
         this_category = models.WordCategory.objects.get(pk=category_id)
         path = f'{this_category.path}{this_category.id}/'
-        this_category.learn_url = f'{learn_url}&category_id={this_category.id}'
     else:
         this_category = models.WordCategory(name='All categories')
-        this_category.learn_url = learn_url
 
     categories = models.WordCategory.get_category(path=path)
     for category in categories:

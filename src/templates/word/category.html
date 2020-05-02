@@ -10,6 +10,7 @@
 {% block content %}
 <div class="contents-area">
     <h2>{{ this_category.name }}</h2>
+    {% if this_category.id %}
     <div class="card-wrap">
         <div class="card">
             <a href="/word/learn?category_id={{this_category.id}}">
@@ -38,6 +39,7 @@
             </a>
         </div>
     </div>
+    {% endif %}
     <div class="card-wrap">
         {% for category in categories %}
             {% if category.visible %}
