@@ -62,8 +62,8 @@
                 v-bind:class="{ 'error': errorAnswer}"
                 autocomplete="off">
         </div>
-        <div v-on:click="next" class="button green">わかった</div>
-        <div v-on:click="markedUnknown" class="button red">わからなかった</div>
+        <div v-on:click="answerWord(0)" class="button green">わかった</div>
+        <div v-on:click="answerWord(1)" class="button red">わからなかった</div>
 
     </div>
     <form method="get" id="form" action="">

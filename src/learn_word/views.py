@@ -61,23 +61,26 @@ class Star(LoginRequiredMixin, APIView):
         return Response(data={'is_checked': request.data.get('is_checked')}, status=status.HTTP_200_OK)
 
 
-class UnknownWord(LoginRequiredMixin, APIView):
+class AnswerWord(LoginRequiredMixin, APIView):
 
     def post(self, request):
         user = request.user
         logger.info(request.user.id)
         word_log_id = request.data.get('word_log_id')
-        logger.debug(f'word_log_id:{word_log_id} unknown')
+        is_unknown = request.data.get('is_unknown')
+        logger.debug(f'word_log_id:{word_log_id} is_unknown: {is_unknown}')
         word_log = models.WordLog.objects.filter(pk=word_log_id, user_id=user.id).first()
 
         if word_log is None:
             logger.exception("わからない単語登録失敗:一致するデータがありません")
             return Response(data={'error_message': "一致するデータがありません"}, status=status.HTTP_400_BAD_REQUEST)
 
-        word_log.mark_unknown()
+        if is_unknown:
+            word_log.mark_unknown()
+        else:
+            word_log.mark_known()
 
         return Response(status=status.HTTP_200_OK)
-
 
 class Setting(LoginRequiredMixin, APIView):
 

@@ -31,11 +31,12 @@ const app = new Vue({
                 console.log(res)
             });
         },
-        markedUnknown(){
+        answerWord(is_unknown){
             const data = JSON.stringify({
-                'word_log_id': this.wordLogId
+                'word_log_id': this.wordLogId,
+                'is_unknown': is_unknown
             });
-            axios.post('/word/api/unknown-word', data, this.ajaxConfig)
+            axios.post('/word/api/answer', data, this.ajaxConfig)
             .then(function(res){
                 console.log(res)
                 if(res.status === 200){
@@ -138,14 +139,14 @@ const app = new Vue({
                 // ->
                 if(event.keyCode === 39){
                     console.log("わかった")
-                    app.next()
+                    app.answerWord(is_unknown=0)
                     event.stopPropagation();
                     return false;
                 }
                 // <-
                 else if(event.keyCode === 37){
                     console.log("わからない")
-                    app.markedUnknown()
+                    app.answerWord(is_unknown=1)
                     event.stopPropagation();
                     return false;
 

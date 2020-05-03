@@ -21,7 +21,7 @@ def calc_learn_order():
                 user_id=user.id,
                 english_word_id=word.id
             )
-            word_summary.order = -1 * point
+            word_summary.order = point
             word_summary.save()
 
 def download(link, filename="/static/sounds/test.mp3"):
