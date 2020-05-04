@@ -209,6 +209,7 @@ def learn_result(request):
             english_word_id=english_word.id
         )
         word.display_count = word_summary.display_count
+        word.display_order = word_summary.order
 
     category_id = request.GET.get("category_id", 'None')
     visible_checked = request.GET.get("visible_checked", 0)

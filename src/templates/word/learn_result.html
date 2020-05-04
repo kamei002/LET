@@ -24,6 +24,7 @@
             <th>No</th>
             <th>word</th>
             <th>count</th>
+            <th>display_order</th>
         </thead>
         <tbody>
         {% for word_log in word_logs %}
@@ -31,6 +32,7 @@
                 <td>{{word_log.english_word.order}}</td>
                 <td>{{word_log.english_word.word}}</td>
                 <td>{{word_log.display_count}}</td>
+                <td>{{word_log.display_order}}</td>
             </tr>
         {% endfor %}
         </tbody>
