@@ -82,29 +82,25 @@ body {
   cursor: pointer;
 }
 
+.button:link {
+  color: #fff;
+}
+
+.button:visited {
+  color: #fff;
+}
+
+.button:hover {
+  color: #fff;
+}
+
+.button:active {
+  color: #fff;
+}
+
 .button:hover {
   opacity: 0.5;
   transition: all 0.2s linear;
-}
-
-.button a {
-  text-decoration: none;
-}
-
-.button a:link {
-  color: #fff;
-}
-
-.button a:visited {
-  color: #fff;
-}
-
-.button a:hover {
-  color: #fff;
-}
-
-.button a:active {
-  color: #fff;
 }
 
 .button.blue {
@@ -142,6 +138,10 @@ body {
   max-width: 100%;
 }
 
+.card-wrap .card a {
+  text-decoration: none;
+}
+
 .card-wrap .card .sambnail {
   width: 320px;
   height: 170px;
@@ -158,6 +158,7 @@ body {
 }
 
 .card-wrap .card .title {
+  text-decoration: none;
   font-size: 1.5em;
   font-weight: bold;
   text-align: center;

@@ -68,16 +68,23 @@ body{
 }
 
 .button{
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    max-width: 600px;
+    text-align: center;
+    margin: 10px auto;
+    cursor: pointer;
+
+    &:link { color: #fff; }
+    &:visited { color: #fff; }
+    &:hover { color: #fff; }
+    &:active { color: #fff; }
+
     &:hover{
         opacity:0.5;
         transition:all 0.2s linear;
-    }
-    a{
-        &:link { color: #fff; }
-        &:visited { color: #fff; }
-        &:hover { color: #fff; }
-        &:active { color: #fff; }
-        text-decoration: none;
     }
     &.blue{
         background-color: #007bff;
@@ -100,15 +107,6 @@ body{
         color: #fff;
     }
 
-    padding: 0.5rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 0.25rem;
-    max-width: 600px;
-    text-align: center;
-    margin: 10px auto;
-    cursor: pointer;
-
 }
 
 
@@ -120,6 +118,9 @@ body{
     .card{
         margin: 1em;
         max-width: 100%;
+        a{
+            text-decoration: none;
+        }
         .sambnail{
             width: 320px;
             // min-width: 100px;
@@ -139,6 +140,7 @@ body{
         }
 
         .title{
+            text-decoration: none;
             font-size: 1.5em;
             font-weight: bold;
             text-align: center;

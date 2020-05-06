@@ -39,7 +39,7 @@
                         {% endif %}
                     </div>
                     {% if synonyms %}
-                    <div class="synonym-wrap">
+                    <div v-on:click="visibleMeaning" class="synonym-wrap">
                         <div class="synonym-title">synonyms:</div>
                         <div class="synonyms">
                             {% for synonym in synonyms %}

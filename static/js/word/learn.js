@@ -16,6 +16,13 @@ const app = new Vue({
         toggleVisible(){
             this.meanShow = !this.meanShow
         },
+        visibleMeaning(){
+            console.log('visibleMeaning')
+            this.meanShow = true;
+            event.stopPropagation();
+            return false;
+
+        },
         toggleStar(e){
 
             const data = JSON.stringify({
@@ -110,6 +117,7 @@ const app = new Vue({
     },
     mounted: function(){
         $("#answer").focus()
+        window.scroll(0, 0);
 
         $("#app").keydown(function(event) {
             console.log(event.keyCode)
