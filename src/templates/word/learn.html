@@ -38,6 +38,16 @@
                         <img src="{{ study_word.image_path }}">
                         {% endif %}
                     </div>
+                    {% if synonyms %}
+                    <div class="synonym-wrap">
+                        <div class="synonym-title">synonyms:</div>
+                        <div class="synonyms">
+                            {% for synonym in synonyms %}
+                                <div class="synonym">{{synonym.word}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <input id="server_params" type="hidden"
                         data-is-checked={{word_summary.is_checked}}

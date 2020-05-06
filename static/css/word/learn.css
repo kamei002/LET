@@ -74,6 +74,29 @@
   padding: 1em;
 }
 
+.card-wrap .learn-card .content .synonym-wrap {
+  margin: 10px;
+  padding: 10px;
+}
+
+.card-wrap .learn-card .content .synonym-wrap .synonym-title {
+  font-weight: bold;
+}
+
+.card-wrap .learn-card .content .synonym-wrap .synonyms {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+.card-wrap .learn-card .content .synonym-wrap .synonyms .synonym {
+  padding: 6px;
+  margin: 5px;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #0161cc;
+}
+
 .button-area {
   margin: 1em;
 }

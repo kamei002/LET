@@ -180,6 +180,8 @@ def learn(request):
     study_word = study_words[index]
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
     word_summary = word_log.get_word_summary()
+    synonyms = models.Synonyms.objects.filter(synonym_word_id=study_word.id)
+    logger.debug(f"synonyms:{synonyms}")
 
     data = {
         'study_word': study_word,
@@ -189,6 +191,7 @@ def learn(request):
         "category_id": category_id,
         "word_count": word_count,
         "visible_checked": visible_checked,
+        "synonyms": synonyms,
     }
     return render(request, template_name='word/learn.html', context=data)
 

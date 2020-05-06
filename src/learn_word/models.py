@@ -183,3 +183,12 @@ class WordLearnSetting(models.Model):
             setting = WordLearnSetting(user_id=user_id)
             setting.save()
         return setting
+
+
+class Synonyms(models.Model):
+    word = models.CharField(max_length=255)
+    synonym_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='synonyms')
+    english_word = models.ForeignKey(EnglishWord, null=True, on_delete=models.SET_NULL, related_name='related_synonyms')
+
+    class Meta:
+        db_table = 'synonym'
