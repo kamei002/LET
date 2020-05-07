@@ -43,7 +43,7 @@
                         <div class="synonym-title">synonyms:</div>
                         <div class="synonyms">
                             {% for synonym in synonyms %}
-                                <div class="synonym">{{synonym.word}}</div>
+                                <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
                             {% endfor %}
                         </div>
                     </div>
