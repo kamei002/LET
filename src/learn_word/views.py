@@ -181,6 +181,13 @@ def learn(request):
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
     word_summary = word_log.get_word_summary()
     synonyms = models.Synonyms.objects.filter(synonym_word_id=study_word.id)
+    synonyms = synonyms.extra(
+        select={
+            'english_word_id_is_null': 'english_word_id IS NULL',
+        },
+        order_by=['english_word_id_is_null', 'english_word_id'],
+    )
+
     logger.debug(f"synonyms:{synonyms}")
 
     data = {
@@ -204,7 +211,10 @@ def learn_result(request):
     limit = int(limit)
     word_logs = models.WordLog.get_learn_result(user_id=user.id, limit=limit)
 
-    rate = len([l for l in word_logs if l.is_unknown is False]) / len(word_logs) * 100
+    if word_logs:
+        rate = len([l for l in word_logs if l.is_unknown is False]) / len(word_logs) * 100
+    else:
+        rate = 100
     for word in word_logs:
         english_word = word.english_word
         word_summary = models.WordSummary.find_one(

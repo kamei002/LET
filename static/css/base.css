@@ -80,6 +80,7 @@ body {
   text-align: center;
   margin: 10px auto;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .button:link {

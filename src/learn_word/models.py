@@ -17,7 +17,15 @@ def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
 
     sql += f"WHERE 1=1 "
     if category_id:
-        sql += f"AND english_word.category_id = {category_id} "
+        category = WordCategory.objects.get(pk=category_id)
+        category_id_array = [str(v) for v in category.get_children().values_list('id', flat=True)]
+        category_id_array.append(str(category.id))
+        category_ids = ','.join(category_id_array)
+        logger.debug(category_ids)
+        sql += " AND english_word_id IN ("\
+            "SELECT category_word_relation.english_word_id "\
+            f"FROM category_word_relation WHERE category_word_relation.category_id IN ({category_ids})"\
+            ")"
 
     if is_checked:
         sql += f"AND word_summary.is_checked = true "
@@ -34,6 +42,10 @@ class WordCategory(models.Model):
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=255, null=True)
     image_path = models.CharField(max_length=255, null=True)
+    words = models.ManyToManyField(
+        "EnglishWord",
+        through="CategoryWordRelation",
+    )
 
     class Meta:
         db_table = 'word_category'
@@ -60,6 +72,14 @@ class WordCategory(models.Model):
                 return True
         return False
 
+
+class CategoryWordRelation(models.Model):
+    english_word = models.ForeignKey("EnglishWord", on_delete=models.CASCADE)
+    category = models.ForeignKey("WordCategory", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'category_word_relation'
+
 class EnglishWord(models.Model):
     word = models.CharField(max_length=255)
     mean = models.CharField(max_length=255, null=True)
@@ -69,7 +89,7 @@ class EnglishWord(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(WordCategory, null=True, on_delete=models.SET_NULL, related_name='words')
+    # category = models.ForeignKey(WordCategory, null=True, on_delete=models.SET_NULL, related_name='temp_words')
 
     class Meta:
         db_table = 'english_word'

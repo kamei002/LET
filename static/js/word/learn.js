@@ -17,7 +17,6 @@ const app = new Vue({
             this.meanShow = !this.meanShow
         },
         visibleMeaning(){
-            console.log('visibleMeaning')
             this.meanShow = true;
             event.stopPropagation();
             return false;
@@ -88,7 +87,6 @@ const app = new Vue({
             if(answer === this.word){
                 return false
             }
-            console.log("wrong Answer")
             this.errorAnswer = true;
             return true
 
@@ -120,7 +118,7 @@ const app = new Vue({
         window.scroll(0, 0);
 
         $("#app").keydown(function(event) {
-            console.log(event.keyCode)
+            // console.log(event.keyCode)
             // event.ctrlKey = Ctr,  event.metaKey = Command(Mac)
             const shift = 16
             const backspace = 8
@@ -146,14 +144,12 @@ const app = new Vue({
                 }
                 // ->
                 if(event.keyCode === 39){
-                    console.log("わかった")
                     app.answerWord(is_unknown=0)
                     event.stopPropagation();
                     return false;
                 }
                 // <-
                 else if(event.keyCode === 37){
-                    console.log("わからない")
                     app.answerWord(is_unknown=1)
                     event.stopPropagation();
                     return false;
