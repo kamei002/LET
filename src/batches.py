@@ -123,6 +123,47 @@ def get_synonyms():
 
         time.sleep(random.random()*10)
 
+
+def get_synonyms_from_oxford():
+
+    word_obj_list = word_models.EnglishWord.objects.filter(synonyms__isnull=True)
+    for word_obj in tqdm(word_obj_list):
+        word = word_obj.word
+        # url = 'https://www.lexico.com/en/definition/groan'
+        url = f'https://www.lexico.com/en/definition/{word}'
+        headers = get_scrape_header()
+        res = requests.get(url, headers=headers)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        try:
+            logger.debug(f"word:{word}")
+            synonyms_node = soup.select(".synonyms .exg .syn")
+            logger.debug(f"synonyms_node:{synonyms_node}")
+            # logger.debug(f"synonyms_node:{soup.select('.exg')}")
+
+            synonym_word_id = word_obj.id
+            synonyms = set()
+            for synonym_node in synonyms_node:
+                synonym_list = synonym_node.string
+                for synonym in synonym_list.split(','):
+                    synonym = synonym.replace(" ", "")
+                    if synonym:
+                        synonyms.add(synonym)
+
+            logger.debug(synonyms)
+            for synonym in synonyms:
+                english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
+                synonym_obj = word_models.Synonyms(
+                    synonym_word_id=synonym_word_id,
+                    word=synonym,
+                    english_word=english_word
+                )
+                synonym_obj.save()
+
+        except Exception as e:
+            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
+        time.sleep(random.random()*10)
+
+
 def get_scrape_header():
     headers = {
         'user-agent': 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36',
