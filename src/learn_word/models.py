@@ -212,3 +212,32 @@ class Synonyms(models.Model):
 
     class Meta:
         db_table = 'synonym'
+
+
+class Define(models.Model):
+    english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='defines')
+    meaning_en = models.CharField(max_length=255, null=True)
+    meaning_jp = models.CharField(max_length=255, null=True)
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='define_children'
+    )
+    word_class = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'define'
+
+class MeaningSynonym(models.Model):
+    word = models.CharField(max_length=255)
+    define = models.ForeignKey(Define, on_delete=models.CASCADE, related_name='define_synonyms')
+    english_word = models.ForeignKey(
+        EnglishWord,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='related_define_synonyms'
+    )
+
+    class Meta:
+        db_table = 'define_synonym'

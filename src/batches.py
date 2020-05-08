@@ -163,6 +163,108 @@ def get_synonyms_from_oxford():
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
         time.sleep(random.random()*10)
 
+def scrape_oxford():
+
+    word_obj_list = word_models.EnglishWord.objects.filter(defines__isnull=True)
+    for word_obj in tqdm(word_obj_list):
+        word = word_obj.word
+        # url = 'https://www.lexico.com/en/definition/groan'
+        url = f'https://www.lexico.com/en/definition/{word}'
+        headers = get_scrape_header()
+        res = requests.get(url, headers=headers)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        try:
+            word_class_sections = soup.select("section.gramb")
+
+            logger.debug(f"word:{word}")
+            # logger.debug(f"word_class_sections:{word_class_sections}\n\n\n")
+
+            for word_class_section in word_class_sections:
+                _scrape_oxford_word_section(word_obj=word_obj, word_class_section=word_class_section)
+
+        except Exception as e:
+            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
+
+        time.sleep(random.random()*10)
+
+def _scrape_oxford_word_section(word_obj, word_class_section):
+    # logger.debug(f"word_class_section:{word_class_section}\n\n\n")
+    word_class = word_class_section.select(".pos")
+    if not word_class:
+        return
+    word_class = word_class[0].string
+    logger.debug(f"word_class:{word_class}")
+
+    mean_nodes = word_class_section.select("ul li div.trg")
+    # logger.debug(f"mean_nodes:{mean_nodes}\n\n\n")
+
+    for mean_node in mean_nodes:
+        _scrape_oxford_mean_node(word_obj=word_obj, mean_node=mean_node, word_class=word_class)
+
+
+def _scrape_oxford_mean_node(word_obj, mean_node, word_class=''):
+    # logger.debug(f"mean_node:{mean_node}\n\n\n")
+    mean = mean_node.select('p:nth-child(1) span.ind')
+    if not mean:
+        logger.info(f"mean not found!!!!!:{mean_node}\n\n\n")
+        return
+    mean = mean[0].string
+    # logger.debug(f"mean:{mean}")
+
+    synonyms_node = mean_node.select(".synonyms .exg .syn")
+    # logger.debug(f"synonyms_node:{synonyms_node}\n\n\n")
+
+    define_obj = word_models.Define(
+        english_word_id=word_obj.id,
+        meaning_en=mean,
+        parent=None,
+        word_class=word_class,
+    )
+    define_obj.save()
+    logger.debug(f"save define. id:{define_obj.id} meaning:{mean}")
+    define_id = define_obj.id
+
+    _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=define_id)
+
+    children_node = mean_node.select('li.subSense')
+    for child_node in children_node:
+        child_mean = child_node.select('span.ind')
+        if child_mean:
+            continue
+        child_mean = child_mean[0].string
+
+        child_define_obj = word_models.Define(
+            english_word_id=word_obj.id,
+            meaning_en=child_mean,
+            parent_id=define_id,
+            word_class=word_class,
+        )
+        child_define_obj.save()
+        logger.debug(f"save define child. id:{child_define_obj.id} meaning:{child_mean} parent_id:{define_id}")
+
+        synonyms_node = child_node.select(".synonyms .exg .syn")
+        _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=child_define_obj.id)
+
+
+def _save_oxford_synonyms(synonyms_node, define_id):
+    # synonyms = set()
+    for synonym_node in synonyms_node:
+        synonym_list = synonym_node.string
+        for synonym in synonym_list.split(','):
+            synonym = synonym.replace(" ", "")
+            if synonym:
+                # synonyms.add(synonym)
+                logger.debug(f"save_synonym word:{synonym} define_id:{define_id}")
+                english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
+                synonym_obj = word_models.MeaningSynonym(
+                    word=synonym,
+                    define_id=define_id,
+                    english_word=english_word,
+                )
+                synonym_obj.save()
+
+    # return synonyms
+
 
 def get_scrape_header():
     headers = {
