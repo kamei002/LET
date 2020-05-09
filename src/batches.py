@@ -169,8 +169,8 @@ def scrape_oxford():
     word_obj_list = word_models.EnglishWord.objects.filter(defines__isnull=True)
     for word_obj in tqdm(word_obj_list):
         word = word_obj.word
-        url = 'https://www.lexico.com/en/definition/prove'
-        # url = f'https://www.lexico.com/en/definition/{word}'
+        # url = 'https://www.lexico.com/en/definition/prove'
+        url = f'https://www.lexico.com/en/definition/{word}'
         headers = get_scrape_header()
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
