@@ -8,6 +8,9 @@ const app = new Vue({
         sending: false,
         visibleChecked: false,
         id: 0,
+        showMean: false,
+        showOxfordMean: false,
+        showSynonyms: false,
       },
     methods: {
         sound(e) {
@@ -102,6 +105,12 @@ const app = new Vue({
         this.categoryId =  params.dataset.categoryId;
         this.index = Number(params.dataset.index);
         this.visibleChecked =  Number(params.dataset.visibleChecked);
+        this.showMean = params.dataset.showMean !== 'False';
+        this.showOxfordMean = params.dataset.showOxfordMean !== 'False';
+        this.showSynonyms = params.dataset.showSynonyms !== 'False';
+        console.log(params.dataset.showMean)
+        console.log(params.dataset.showOxfordMean)
+        console.log(params.dataset.showSynonyms)
 
         axios.defaults.xsrfCookieName = 'csrftoken'
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
@@ -118,7 +127,7 @@ const app = new Vue({
         window.scroll(0, 0);
 
         $("#app").keydown(function(event) {
-            // console.log(event.keyCode)
+            console.log(event.keyCode)
             // event.ctrlKey = Ctr,  event.metaKey = Command(Mac)
             const shift = 16
             const backspace = 8
@@ -154,6 +163,21 @@ const app = new Vue({
                     event.stopPropagation();
                     return false;
 
+                }
+                if(event.keyCode === 188){
+                    app.showMean = !app.showMean
+                    event.stopPropagation();
+                    return false;
+                }
+                if(event.keyCode === 190){
+                    app.showOxfordMean = !app.showOxfordMean
+                    event.stopPropagation();
+                    return false;
+                }
+                if(event.keyCode === 191){
+                    app.showSynonyms = !app.showSynonyms
+                    event.stopPropagation();
+                    return false;
                 }
             }
         });

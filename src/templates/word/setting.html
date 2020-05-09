@@ -18,6 +18,46 @@
             </div>
             <div class="valid-error">{{ form.errors.learn_num }}</div>
         </div>
+
+        <div class="field-wrap">
+            <div class="field-contents">
+                <div class='contents'>
+                    <label>Show meaning?</label>
+                    <div class="switchArea">
+                        {{ form.show_mean }}
+                        <label for="{{ form.show_mean.id_for_label }}"><span></span></label>
+                        <div class="swImg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="valid-error">{{ form.errors.show_mean }}</div>
+        </div>
+        <div class="field-wrap">
+            <div class="field-contents">
+                <div class='contents'>
+                    <label>Show oxford meaning?</label>
+                    <div class="switchArea">
+                        {{ form.show_oxford_mean }}
+                        <label for="{{ form.show_oxford_mean.id_for_label }}"><span></span></label>
+                        <div class="swImg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="valid-error">{{ form.errors.show_oxford_mean }}</div>
+        </div>
+        <div class="field-wrap">
+            <div class="field-contents">
+                <div class='contents'>
+                    <label>Show synonyms?</label>
+                    <div class="switchArea">
+                        {{ form.show_synonyms }}
+                        <label for="{{ form.show_synonyms.id_for_label }}"><span></span></label>
+                        <div class="swImg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="valid-error">{{ form.errors.show_synonyms }}</div>
+        </div>
         <div class="flex-center field-wrap">
             <input type="submit" class="btn btn-primary" value="Save option">
         </div>

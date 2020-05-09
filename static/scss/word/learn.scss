@@ -67,6 +67,10 @@
             .define{
                 // padding: 5px 0;
                 .mean{
+                    display: none;
+                    &.show{
+                        display: block;
+                    }
                     margin-top: 10px;
                     font-size: 1.5em;
                 }
@@ -78,7 +82,10 @@
                         font-weight: bold;
                     }
                     .synonyms{
-                        display: flex;
+                        display: none;
+                        &.show{
+                            display: flex;
+                        }
                         // flex-wrap: wrap;
                         overflow: scroll;
                         // margin: 10px;

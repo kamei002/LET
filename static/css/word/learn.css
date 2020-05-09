@@ -71,8 +71,13 @@
 }
 
 .card-wrap .learn-card .content .define .mean {
+  display: none;
   margin-top: 10px;
   font-size: 1.5em;
+}
+
+.card-wrap .learn-card .content .define .mean.show {
+  display: block;
 }
 
 .card-wrap .learn-card .content .define .synonym-wrap .synonym-title {
@@ -80,8 +85,12 @@
 }
 
 .card-wrap .learn-card .content .define .synonym-wrap .synonyms {
-  display: flex;
+  display: none;
   overflow: scroll;
+}
+
+.card-wrap .learn-card .content .define .synonym-wrap .synonyms.show {
+  display: flex;
 }
 
 .card-wrap .learn-card .content .define .synonym-wrap .synonyms .synonym {

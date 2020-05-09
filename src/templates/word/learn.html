@@ -31,23 +31,26 @@
             </div>
             <div v-on:click="toggleVisible" class="content" v-bind:class="{'show': meanShow}">
                 <div class="wrapper">
-                        {% if setting.show_mean %}
-                            <div class="define">
-                                <div class="mean">{{ study_word.mean}}</div>
+                        <div class="define">
+                            <div
+                                class="mean"
+                                v-bind:class="{ 'show': showMean }">
+                                {{ study_word.mean}}
                             </div>
-                        {% endif %}
+                        </div>
                         {% for define in defines %}
                             <div class="define">
-                                {% if setting.show_oxford_mean %}
-                                    <div class="mean">{{ define.meaning_ja}}</div>
-                                {% endif %}
+                                <div
+                                    class="mean"
+                                    v-bind:class="{ 'show': showOxfordMean }">
+                                    {{ define.meaning_ja}}
+                                </div>
                                 <div v-on:click="visibleMeaning" class="synonym-wrap">
-                                    <div class="synonyms">
-                                        {% if setting.show_synonyms %}
-                                            {% for synonym in define.synonyms %}
-                                                <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
-                                            {% endfor %}
-                                        {% endif %}
+                                    <div class="synonyms"
+                                        v-bind:class="{ 'show': showSynonyms }">
+                                        {% for synonym in define.synonyms %}
+                                            <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -67,6 +70,9 @@
                         data-category-id={{category_id}}
                         data-index={{index}}
                         data-visible-checked={{visible_checked}}
+                        data-show-mean={{setting.show_mean}}
+                        data-show-oxford-mean={{setting.show_oxford_mean}}
+                        data-show-synonyms={{setting.show_synonyms}}
                     >
 
                 </div>
@@ -109,6 +115,24 @@
                 <td>日本語訳表示</td>
                 <td>わかった</td>
                 <td>わからなかった</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="flex-center">
+    <table class="normal-table">
+        <caption>Shortcut Keys</caption>
+        <thead>
+            <th>Ctrl + ,</th>
+            <th>Ctrl + .</th>
+            <th>Ctrl + /</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Show meaning</td>
+                <td>Show oxford meaning</td>
+                <td>Show synonyms</td>
             </tr>
         </tbody>
     </table>

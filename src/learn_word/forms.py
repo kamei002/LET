@@ -12,4 +12,10 @@ logger = logging.getLogger("app")
 class SettingForm(ModelForm):
     class Meta:
         model = models.WordLearnSetting
-        fields = ['learn_num']
+        fields = [
+            'learn_num',
+            'default_unknown',
+            'show_mean',
+            'show_oxford_mean',
+            'show_synonyms',
+        ]
