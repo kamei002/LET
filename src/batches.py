@@ -3,6 +3,9 @@ from account import models as account_models
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 
+from django.db import connection, transaction
+
+import pandas as pd
 import logging
 import requests
 import random
@@ -91,7 +94,6 @@ def get_mean():
         word_obj.save()
         time.sleep(random.random()*10)
 
-
 def get_synonyms():
 
     word_obj_list = word_models.EnglishWord.objects.filter(synonyms__isnull=True)
@@ -122,7 +124,6 @@ def get_synonyms():
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
 
         time.sleep(random.random()*10)
-
 
 def get_synonyms_from_oxford():
 
@@ -168,8 +169,8 @@ def scrape_oxford():
     word_obj_list = word_models.EnglishWord.objects.filter(defines__isnull=True)
     for word_obj in tqdm(word_obj_list):
         word = word_obj.word
-        # url = 'https://www.lexico.com/en/definition/groan'
-        url = f'https://www.lexico.com/en/definition/{word}'
+        url = 'https://www.lexico.com/en/definition/prove'
+        # url = f'https://www.lexico.com/en/definition/{word}'
         headers = get_scrape_header()
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
@@ -184,87 +185,98 @@ def scrape_oxford():
 
         except Exception as e:
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
-
+        return
         time.sleep(random.random()*10)
 
+
 def _scrape_oxford_word_section(word_obj, word_class_section):
-    # logger.debug(f"word_class_section:{word_class_section}\n\n\n")
-    word_class = word_class_section.select(".pos")
-    if not word_class:
-        return
-    word_class = word_class[0].string
-    logger.debug(f"word_class:{word_class}")
+    try:
+        # logger.debug(f"word_class_section:{word_class_section}\n\n\n")
+        word_class = word_class_section.select(".pos")
+        if not word_class:
+            return
+        word_class = word_class[0].string
+        logger.debug(f"word_class:{word_class}")
 
-    mean_nodes = word_class_section.select("ul li div.trg")
-    # logger.debug(f"mean_nodes:{mean_nodes}\n\n\n")
+        mean_nodes = word_class_section.select("ul li div.trg")
+        logger.debug(f"mean_nodes:{mean_nodes}\n\n\n")
 
-    for mean_node in mean_nodes:
-        _scrape_oxford_mean_node(word_obj=word_obj, mean_node=mean_node, word_class=word_class)
-
+        for mean_node in mean_nodes:
+            _scrape_oxford_mean_node(word_obj=word_obj, mean_node=mean_node, word_class=word_class)
+    except Exception as e:
+        logger.exception(f'word_id:{word_obj.id} word_class_section:{word_class_section} error_message: {e}')
 
 def _scrape_oxford_mean_node(word_obj, mean_node, word_class=''):
-    # logger.debug(f"mean_node:{mean_node}\n\n\n")
-    mean = mean_node.select('p:nth-child(1) span.ind')
-    if not mean:
-        logger.info(f"mean not found!!!!!:{mean_node}\n\n\n")
-        return
-    mean = mean[0].string
-    # logger.debug(f"mean:{mean}")
+    try:
+        # logger.debug(f"mean_node:{mean_node}\n\n\n")
+        mean = mean_node.select('p:nth-child(1) span.ind')
+        if not mean:
+            logger.info(f"mean not found!!!!!:{mean_node}\n\n\n")
+            return
+        mean = mean[0].string
+        # logger.debug(f"mean:{mean}")
 
-    synonyms_node = mean_node.select(".synonyms .exg .syn")
-    # logger.debug(f"synonyms_node:{synonyms_node}\n\n\n")
+        synonyms_node = mean_node.select(".synonyms .exg .syn")
+        # logger.debug(f"synonyms_node:{synonyms_node}\n\n\n")
 
-    define_obj = word_models.Define(
-        english_word_id=word_obj.id,
-        meaning_en=mean,
-        parent=None,
-        word_class=word_class,
-    )
-    define_obj.save()
-    logger.debug(f"save define. id:{define_obj.id} meaning:{mean}")
-    define_id = define_obj.id
-
-    _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=define_id)
-
-    children_node = mean_node.select('li.subSense')
-    for child_node in children_node:
-        child_mean = child_node.select('span.ind')
-        if child_mean:
-            continue
-        child_mean = child_mean[0].string
-
-        child_define_obj = word_models.Define(
+        define_obj = word_models.Define(
             english_word_id=word_obj.id,
-            meaning_en=child_mean,
-            parent_id=define_id,
+            meaning_en=mean,
+            parent=None,
             word_class=word_class,
         )
-        child_define_obj.save()
-        logger.debug(f"save define child. id:{child_define_obj.id} meaning:{child_mean} parent_id:{define_id}")
+        define_obj.save()
+        logger.debug(f"save define. id:{define_obj.id} meaning:{mean}")
+        define_id = define_obj.id
 
-        synonyms_node = child_node.select(".synonyms .exg .syn")
-        _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=child_define_obj.id)
+        _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=define_id)
 
+        # children_node = mean_node.select('li.subSense')
+        # logger.debug(f"children_node:{children_node}\n\n\n")
+        # for child_node in children_node:
+        #     try:
+        #         child_mean = child_node.select('span.ind')
+        #         if not child_mean:
+        #             logger.info(f"child_mean not Found children_node:{children_node}\n\n")
+        #             continue
+        #         child_mean = child_mean[0].string
+
+        #         child_define_obj = word_models.Define(
+        #             english_word_id=word_obj.id,
+        #             meaning_en=child_mean,
+        #             parent=define_obj,
+        #             word_class=word_class,
+        #         )
+        #         child_define_obj.save()
+        #         logger.debug(f"save define child. id:{child_define_obj.id} meaning:{child_mean} parent_id:{define_id}")
+
+        #         synonyms_node = child_node.select(".synonyms .exg .syn")
+        #         _save_oxford_synonyms(synonyms_node=synonyms_node, define_id=child_define_obj.id)
+        #     except Exception as e:
+        #         logger.exception(f'word_id:{word_obj.id} child_node:{child_node} error_message: {e}')
+
+    except Exception as e:
+        logger.exception(f'word_id:{word_obj.id} mean_node:{mean_node} error_message: {e}')
 
 def _save_oxford_synonyms(synonyms_node, define_id):
-    # synonyms = set()
-    for synonym_node in synonyms_node:
-        synonym_list = synonym_node.string
-        for synonym in synonym_list.split(','):
-            synonym = synonym.replace(" ", "")
-            if synonym:
-                # synonyms.add(synonym)
-                logger.debug(f"save_synonym word:{synonym} define_id:{define_id}")
-                english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
-                synonym_obj = word_models.MeaningSynonym(
-                    word=synonym,
-                    define_id=define_id,
-                    english_word=english_word,
-                )
-                synonym_obj.save()
-
-    # return synonyms
-
+    try:
+        # synonyms = set()
+        for synonym_node in synonyms_node:
+            synonym_list = synonym_node.string
+            for synonym in synonym_list.split(','):
+                synonym = synonym.replace(" ", "")
+                if synonym:
+                    # synonyms.add(synonym)
+                    logger.debug(f"save_synonym word:{synonym} define_id:{define_id}")
+                    english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
+                    synonym_obj = word_models.MeaningSynonym(
+                        word=synonym,
+                        define_id=define_id,
+                        english_word=english_word,
+                    )
+                    synonym_obj.save()
+    except Exception as e:
+        logger.exception(f'synonyms_node:{synonyms_node} error_message: {e}')
 
 def get_scrape_header():
     headers = {
@@ -280,3 +292,21 @@ def get_scrape_header():
         'sec-fetch-site': 'cross-site',
     }
     return headers
+
+def update_meaning_ja(csv_path='define.csv'):
+
+    df = pd.read_csv(csv_path)
+    sql = 'UPDATE define SET meaning_ja = (CASE id '
+    id_list = []
+    for (define_id, meaning_ja) in df[['id', 'meaning_ja']].values:
+        define_id = int(define_id)
+        if not meaning_ja:
+            continue
+        sql += f" WHEN {define_id} THEN '{meaning_ja}' "
+        id_list.append(str(define_id))
+    str_id = ','.join(id_list)
+    sql += f" END) WHERE id IN({str_id})"
+
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    transaction.atomic()

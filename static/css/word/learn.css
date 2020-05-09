@@ -54,6 +54,7 @@
 
 .card-wrap .learn-card .content .wrapper {
   visibility: hidden;
+  padding: 1em;
 }
 
 .card-wrap .learn-card .content.show .wrapper {
@@ -69,27 +70,21 @@
   max-height: 250px;
 }
 
-.card-wrap .learn-card .content .mean {
+.card-wrap .learn-card .content .define .mean {
+  margin-top: 10px;
   font-size: 1.5em;
-  padding: 1em;
 }
 
-.card-wrap .learn-card .content .synonym-wrap {
-  margin: 10px;
-  padding: 10px;
-}
-
-.card-wrap .learn-card .content .synonym-wrap .synonym-title {
+.card-wrap .learn-card .content .define .synonym-wrap .synonym-title {
   font-weight: bold;
 }
 
-.card-wrap .learn-card .content .synonym-wrap .synonyms {
+.card-wrap .learn-card .content .define .synonym-wrap .synonyms {
   display: flex;
-  flex-wrap: wrap;
-  margin: 10px;
+  overflow: scroll;
 }
 
-.card-wrap .learn-card .content .synonym-wrap .synonyms .synonym {
+.card-wrap .learn-card .content .define .synonym-wrap .synonyms .synonym {
   padding: 6px;
   margin: 5px;
   white-space: nowrap;
@@ -98,7 +93,7 @@
   opacity: 0.7;
 }
 
-.card-wrap .learn-card .content .synonym-wrap .synonyms .synonym.active {
+.card-wrap .learn-card .content .define .synonym-wrap .synonyms .synonym.active {
   opacity: 1;
 }
 

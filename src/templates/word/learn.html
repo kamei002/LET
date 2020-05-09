@@ -31,23 +31,32 @@
             </div>
             <div v-on:click="toggleVisible" class="content" v-bind:class="{'show': meanShow}">
                 <div class="wrapper">
-                    <div
-                        class="mean">{{ study_word.mean }}</div>
+                        {% if setting.show_mean %}
+                            <div class="define">
+                                <div class="mean">{{ study_word.mean}}</div>
+                            </div>
+                        {% endif %}
+                        {% for define in defines %}
+                            <div class="define">
+                                {% if setting.show_oxford_mean %}
+                                    <div class="mean">{{ define.meaning_ja}}</div>
+                                {% endif %}
+                                <div v-on:click="visibleMeaning" class="synonym-wrap">
+                                    <div class="synonyms">
+                                        {% if setting.show_synonyms %}
+                                            {% for synonym in define.synonyms %}
+                                                <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     <div class="image flex-center">
                         {% if study_word.image_path %}
                         <img src="{{ study_word.image_path }}">
                         {% endif %}
                     </div>
-                    {% if synonyms %}
-                    <div v-on:click="visibleMeaning" class="synonym-wrap">
-                        <div class="synonym-title">synonyms:</div>
-                        <div class="synonyms">
-                            {% for synonym in synonyms %}
-                                <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
 
                     <input id="server_params" type="hidden"
                         data-is-checked={{word_summary.is_checked}}

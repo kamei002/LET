@@ -180,15 +180,18 @@ def learn(request):
     study_word = study_words[index]
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
     word_summary = word_log.get_word_summary()
-    synonyms = models.Synonyms.objects.filter(synonym_word_id=study_word.id)
-    synonyms = synonyms.extra(
-        select={
-            'english_word_id_is_null': 'english_word_id IS NULL',
-        },
-        order_by=['english_word_id_is_null', 'english_word_id'],
-    )
+    # synonyms = models.Synonyms.objects.filter(synonym_word_id=study_word.id)
+    # synonyms = synonyms.extra(
+    #     select={
+    #         'english_word_id_is_null': 'english_word_id IS NULL',
+    #     },
+    #     order_by=['english_word_id_is_null', 'english_word_id'],
+    # )
+    defines = models.Define.objects.filter(english_word_id=study_word.id)
+    for define in defines:
+        define.synonyms = define.get_synonyms()
 
-    logger.debug(f"synonyms:{synonyms}")
+    logger.debug(f"defines:{defines}")
 
     data = {
         'study_word': study_word,
@@ -198,7 +201,8 @@ def learn(request):
         "category_id": category_id,
         "word_count": word_count,
         "visible_checked": visible_checked,
-        "synonyms": synonyms,
+        "defines": defines,
+        "setting": setting
     }
     return render(request, template_name='word/learn.html', context=data)
 

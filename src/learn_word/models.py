@@ -193,6 +193,9 @@ class WordLearnSetting(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     learn_num = models.IntegerField(default=100)
     default_unknown = models.BooleanField(default=False)
+    show_mean = models.BooleanField(default=True)
+    show_oxford_mean = models.BooleanField(default=True)
+    show_synonyms = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'word_learning_setting'
@@ -217,17 +220,21 @@ class Synonyms(models.Model):
 class Define(models.Model):
     english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='defines')
     meaning_en = models.CharField(max_length=255, null=True)
-    meaning_jp = models.CharField(max_length=255, null=True)
+    meaning_ja = models.CharField(max_length=255, null=True)
     parent = models.ForeignKey(
         'self',
         null=True,
         on_delete=models.SET_NULL,
         related_name='define_children'
     )
-    word_class = models.CharField(max_length=255)
+    word_class = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'define'
+
+    def get_synonyms(self):
+        return MeaningSynonym.objects.filter(define_id=self.id)
+
 
 class MeaningSynonym(models.Model):
     word = models.CharField(max_length=255)
