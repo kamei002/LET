@@ -185,7 +185,6 @@ def scrape_oxford():
 
         except Exception as e:
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
-        return
         time.sleep(random.random()*10)
 
 
