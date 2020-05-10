@@ -12,4 +12,5 @@ urlpatterns = [
     path('learn', views.learn),
     path('learn/result', views.learn_result),
     path('category', views.category),
+    path('<int:word_id>', views.show),
 ]

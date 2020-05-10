@@ -24,5 +24,5 @@ urlpatterns = [
     path('account/', include('account.urls', namespace='account')),
     path('word/', include('learn_word.urls', namespace='word')),
     path('', views.Dashboard.as_view()),
-    url(r'^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
 ]

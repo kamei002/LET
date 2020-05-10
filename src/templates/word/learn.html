@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="right">
-                    <div class="property">{{word_summary.display_count}}回表示 ({{word_summary.order}})</div>
+                    <div class="property">{{word_summary.display_count}} ({{word_summary.order}})</div>
                     <div class="icon">
                         <i v-on:click="toggleStar"
                         v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }"
@@ -53,7 +53,13 @@
                                     <div class="synonyms"
                                         v-bind:class="{ 'show': showSynonyms }">
                                         {% for synonym in define.synonyms %}
-                                            <div class="synonym {% if synonym.english_word %}active{% endif %}">{{synonym.word}}</div>
+                                            {% if synonym.english_word_id %}
+                                                <a href="/word/{{synonym.english_word_id}}">
+                                                    <div class="synonym active">{{synonym.word}}</div>
+                                                </a>
+                                            {% else %}
+                                                <div class="synonym">{{synonym.word}}</div>
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -77,13 +83,14 @@
                         data-show-mean={{setting.show_mean}}
                         data-show-oxford-mean={{setting.show_oxford_mean}}
                         data-show-synonyms={{setting.show_synonyms}}
+                        data-mean-show={{only_show}}
                     >
 
                 </div>
             </div>
         </div>
     </div>
-
+{% if not only_show %}
     <div class="button-area">
         <div class="answer">
             <input type="text" id="answer" placeholder="Answer here"
@@ -91,72 +98,95 @@
                 v-bind:class="{ 'error': errorAnswer}"
                 autocomplete="off">
         </div>
-        <div v-on:click="answerWord(0)" class="button green">わかった</div>
-        <div v-on:click="answerWord(1)" class="button red">わからなかった</div>
+        <div v-on:click="answerWord(0)" class="button green">I know</div>
+        <div v-on:click="answerWord(1)" class="button red">I don't know</div>
 
     </div>
     <form method="get" id="form" action="">
         <input type="hidden" id="index" name="index">
     </form>
-</div>
-<div class="flex-center">
-    <div>{{index|add:1}}/{{word_count}}</div>
-</div>
-<div class="flex-center">
-    <table class="normal-table">
-        <caption>Shortcut Keys</caption>
-        <thead>
-            <th>Ctrl + _</th>
-            <th>Ctrl + ↓</th>
-            <th>Ctrl + ↑</th>
-            <th>Ctrl + →</th>
-            <th>Ctrl + ←</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>チェック</td>
-                <td>音声再生</td>
-                <td>日本語訳表示</td>
-                <td>わかった</td>
-                <td>わからなかった</td>
-            </tr>
-        </tbody>
-    </table>
+{% endif %}
 </div>
 
-<div class="flex-center">
-    <table class="normal-table">
-        <caption>Shortcut Keys</caption>
-        <thead>
-            <th>Ctrl + ,</th>
-            <th>Ctrl + .</th>
-            <th>Ctrl + /</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <button class="pointer"
-                        @click="showMean = !showMean;">
-                        <template v-if="showMean">Hide meaning</template>
-                        <template v-else>Show meaning</template>
-                    </button>
-                </td>
-                <td>
-                    <button class="pointer"
-                        @click="showOxfordMean = !showOxfordMean;">
-                        <template v-if="showOxfordMean">Hide oxford meaning</template>
-                        <template v-else>Show oxford meaning</template>
-                    </button>
-                </td>
-                <td>
-                    <button class="pointer"
-                        @click="showSynonyms = !showSynonyms;">
-                        <template v-if="showSynonyms">Hide synonyms</template>
-                        <template v-else>Show synonyms</template>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<ul class="function-button">
+    <li v-if="showMean" class="button blue" @click="showMean = !showMean; scrollBottom();">
+        <div>Hide meaning</div>
+    </li>
+    <li v-if="!showMean" class="button green" @click="showMean = !showMean; scrollBottom();">
+        <div>Show meaning</div>
+    </li>
+
+    <li v-if="showOxfordMean" class="button blue" @click="showOxfordMean = !showOxfordMean; scrollBottom();">
+        <div>Hide oxford meaning</div>
+    </li>
+    <li v-if="!showOxfordMean" class="button green" @click="showOxfordMean = !showOxfordMean; scrollBottom();">
+        <div>Show oxford meaning</div>
+    </li>
+
+    <li v-if="showSynonyms" class="button blue" @click="showSynonyms = !showSynonyms; scrollBottom();">
+        <div>Hide synonyms</div>
+    </li>
+    <li v-if="!showSynonyms" class="button green" @click="showSynonyms = !showSynonyms; scrollBottom();">
+        <div>Show synonyms</div>
+    </li>
+
+    <li v-if="showDescription" class="button blue" @click="showDescription = !showDescription; scrollBottom();">
+        <div>Hide description</div>
+    </li>
+    <li v-if="!showDescription" class="button green" @click="showDescription = !showDescription; scrollBottom();">
+        <div>Show description</div>
+    </li>
+
+
+</ul>
+<ul v-bind:class="{ 'show': showDescription }" class="shortcut-description">
+    <li>
+        <div class="label">
+            <div>Ctrl + _</div>
+        </div>
+        <div class="contents">check</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + ↓</div>
+        </div>
+        <div class="contents">Play sound</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + ↑</div>
+        </div>
+        <div class="contents">Show meaning area</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + →</div>
+        </div>
+        <div class="contents">I know</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + ←</div>
+        </div>
+        <div class="contents">I don't know</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + ,</div>
+        </div>
+        <div class="contents">Show meaning</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + .</div>
+        </div>
+        <div class="contents">Show oxford meaning</div>
+    </li>
+    <li>
+        <div class="label">
+            <div>Ctrl + /</div>
+        </div>
+        <div class="contents">Show synonyms</div>
+    </li>
+</ul>
 {% endblock %}

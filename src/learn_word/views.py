@@ -130,6 +130,27 @@ def category(request):
     return render(request, template_name='word/category.html', context=data)
 
 @login_required
+def show(request, word_id):
+
+    user = request.user
+    setting = models.WordLearnSetting.find_by_user_id(user.id)
+    study_word = models.EnglishWord.objects.get(pk=word_id)
+    # word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
+    word_summary = models.WordSummary.find_one(user_id=user.id, english_word_id=study_word.id)
+    defines = models.Define.objects.filter(english_word_id=study_word.id)
+    for define in defines:
+        define.synonyms = define.get_synonyms()
+    data = {
+        'study_word': study_word,
+        "word_summary": word_summary,
+        # "word_log": word_log,
+        "defines": defines,
+        "setting": setting,
+        "only_show": True,
+    }
+    return render(request, template_name='word/learn.html', context=data)
+
+@login_required
 def learn(request):
     index = utility.str_to_int(request.GET.get("index"))
     category_id = utility.str_to_integer(request.GET.get("category_id"))
@@ -171,7 +192,7 @@ def learn(request):
 
     study_word = study_words[index]
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
-    word_summary = word_log.get_word_summary()
+    word_summary = models.WordSummary.find_one(user_id=user.id, english_word_id=study_word.id)
 
     defines = models.Define.objects.filter(english_word_id=study_word.id)
     for define in defines:
@@ -188,7 +209,8 @@ def learn(request):
         "word_count": word_count,
         "visible_checked": visible_checked,
         "defines": defines,
-        "setting": setting
+        "setting": setting,
+        "only_show": False,
     }
     return render(request, template_name='word/learn.html', context=data)
 

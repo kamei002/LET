@@ -5,7 +5,6 @@
 }
 
 .card-wrap .learn-card {
-  margin: 1em;
   width: 100%;
   max-width: 600px;
   min-height: 50vh;
@@ -80,6 +79,7 @@
 }
 
 .card-wrap .learn-card .content .image {
+  margin-top: 10px;
   width: 100%;
 }
 
@@ -105,6 +105,10 @@
 .card-wrap .learn-card .content .define .synonym-wrap .synonyms {
   display: none;
   overflow: scroll;
+}
+
+.card-wrap .learn-card .content .define .synonym-wrap .synonyms a {
+  text-decoration: none;
 }
 
 .card-wrap .learn-card .content .define .synonym-wrap .synonyms.show {
@@ -140,4 +144,56 @@
   width: calc(100% - 24px);
   padding: 12px;
   font-size: 1em;
+}
+
+.function-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-wrap: nowrap;
+  margin: 2em 0;
+}
+
+.function-button li {
+  margin: 5px;
+}
+
+.function-button li.button {
+  padding: 5px 0px;
+  font-size: small;
+}
+
+.shortcut-description {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1em;
+}
+
+.shortcut-description.show {
+  display: flex;
+}
+
+.shortcut-description li {
+  border: 1px solid;
+  text-align: center;
+  margin-left: -1px;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.shortcut-description li .label {
+  width: 100%;
+  font-weight: bold;
+  border-bottom: 1px solid;
+}
+
+.shortcut-description li .label div {
+  padding: 5px;
+}
+
+.shortcut-description li .contents {
+  padding: 5px;
 }

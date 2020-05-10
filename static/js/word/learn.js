@@ -11,6 +11,7 @@ const app = new Vue({
         showMean: false,
         showOxfordMean: false,
         showSynonyms: false,
+        showDescription: false,
       },
     methods: {
         sound(e) {
@@ -94,6 +95,9 @@ const app = new Vue({
             return true
 
         },
+        scrollBottom(){
+            setTimeout('window.scrollTo(0,document.body.scrollHeight);', 50);
+        }
     },
     created: function(){
         const params = document.querySelector("#server_params");
@@ -108,9 +112,7 @@ const app = new Vue({
         this.showMean = params.dataset.showMean !== 'False';
         this.showOxfordMean = params.dataset.showOxfordMean !== 'False';
         this.showSynonyms = params.dataset.showSynonyms !== 'False';
-        console.log(params.dataset.showMean)
-        console.log(params.dataset.showOxfordMean)
-        console.log(params.dataset.showSynonyms)
+        this.meanShow = params.dataset.meanShow === 'True';
 
         axios.defaults.xsrfCookieName = 'csrftoken'
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
