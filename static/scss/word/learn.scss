@@ -40,6 +40,20 @@
                 left: -9px;
                 top: -13px;
             }
+            .left{
+                display: flex;
+                align-items: center;
+            }
+            .right{
+                display: flex;
+                align-items: center;
+                .property{
+                    font-size: 0.6em;
+                }
+            }
+            .icon{
+                margin: 0 5px;
+            }
 
         }
         .content{

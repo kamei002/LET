@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-
+from config import utility
 from learn_word import forms
 from learn_word import models
 import logging
@@ -131,21 +131,13 @@ def category(request):
 
 @login_required
 def learn(request):
-    index = request.GET.get("index", 0)
-    category_id = request.GET.get("category_id", 'None')
-    visible_checked = request.GET.get("visible_checked", 0)
+    index = utility.str_to_int(request.GET.get("index"))
+    category_id = utility.str_to_integer(request.GET.get("category_id"))
+    visible_checked = utility.convert_to_bool(request.GET.get("visible_checked"))
     if visible_checked:
         visible_checked = 1
-    index = int(index)
-    try:
-        if category_id == 'None':
-            category_id = None
-        else:
-            category_id = int(category_id)
-
-    except Exception:
-        logger.error(f"wired category_id:{category_id}")
-        category_id = None
+    else:
+        visible_checked = 0
 
     user = request.user
     setting = models.WordLearnSetting.find_by_user_id(user.id)
@@ -164,7 +156,7 @@ def learn(request):
             is_checked=visible_checked
         )
         study_words = list(study_words)
-        cache.set(key, study_words, timeout=60*60*3)
+        cache.set(key, study_words, timeout=60*60*24)
         logger.info("get study_words")
 
     word_count = len(study_words)
@@ -180,13 +172,7 @@ def learn(request):
     study_word = study_words[index]
     word_log = models.WordLog.create(user_id=user.id, english_word_id=study_word.id)
     word_summary = word_log.get_word_summary()
-    # synonyms = models.Synonyms.objects.filter(synonym_word_id=study_word.id)
-    # synonyms = synonyms.extra(
-    #     select={
-    #         'english_word_id_is_null': 'english_word_id IS NULL',
-    #     },
-    #     order_by=['english_word_id_is_null', 'english_word_id'],
-    # )
+
     defines = models.Define.objects.filter(english_word_id=study_word.id)
     for define in defines:
         define.synonyms = define.get_synonyms()

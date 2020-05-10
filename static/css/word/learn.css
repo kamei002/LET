@@ -45,6 +45,24 @@
   top: -13px;
 }
 
+.card-wrap .learn-card .title .left {
+  display: flex;
+  align-items: center;
+}
+
+.card-wrap .learn-card .title .right {
+  display: flex;
+  align-items: center;
+}
+
+.card-wrap .learn-card .title .right .property {
+  font-size: 0.6em;
+}
+
+.card-wrap .learn-card .title .icon {
+  margin: 0 5px;
+}
+
 .card-wrap .learn-card .content {
   width: 100%;
   word-break: break-all;

@@ -323,3 +323,7 @@ body {
   transition: .2s;
   /* 滑らか変化         */
 }
+
+.pointer {
+  cursor: pointer;
+}

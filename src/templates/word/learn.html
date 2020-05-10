@@ -14,19 +14,23 @@
         <div class="learn-card" id="card">
             <div class="title">
 
-                <div>
-                    <span class="order">{{study_word.order}}</span>{{ study_word.word }}
-                    <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
-                        <audio class="contentAudio" controls="controls" preload="none" id="audio">
-                            <source src="{{study_word.audio_path}}" type="audio/mpeg">
-                        </audio>
-                    </i>
+                <div class="left">
+                    <div><span class="order">{{study_word.order}}</span>{{ study_word.word }}</div>
+                    <div class="icon">
+                        <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
+                            <audio class="contentAudio" controls="controls" preload="none" id="audio">
+                                <source src="{{study_word.audio_path}}" type="audio/mpeg">
+                            </audio>
+                        </i>
+                    </div>
                 </div>
-                <div>
-                    {{word_summary.display_count}}回表示
-                    <i v-on:click="toggleStar"
+                <div class="right">
+                    <div class="property">{{word_summary.display_count}}回表示 ({{word_summary.order}})</div>
+                    <div class="icon">
+                        <i v-on:click="toggleStar"
                         v-bind:class="{ 'fa-star-o': !isChecked, 'fa-star': isChecked }"
                         class="fa" aria-hidden="true"></i>
+                    </div>
                 </div>
             </div>
             <div v-on:click="toggleVisible" class="content" v-bind:class="{'show': meanShow}">
@@ -130,9 +134,27 @@
         </thead>
         <tbody>
             <tr>
-                <td>Show meaning</td>
-                <td>Show oxford meaning</td>
-                <td>Show synonyms</td>
+                <td>
+                    <button class="pointer"
+                        @click="showMean = !showMean;">
+                        <template v-if="showMean">Hide meaning</template>
+                        <template v-else>Show meaning</template>
+                    </button>
+                </td>
+                <td>
+                    <button class="pointer"
+                        @click="showOxfordMean = !showOxfordMean;">
+                        <template v-if="showOxfordMean">Hide oxford meaning</template>
+                        <template v-else>Show oxford meaning</template>
+                    </button>
+                </td>
+                <td>
+                    <button class="pointer"
+                        @click="showSynonyms = !showSynonyms;">
+                        <template v-if="showSynonyms">Hide synonyms</template>
+                        <template v-else>Show synonyms</template>
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
