@@ -4,6 +4,7 @@ node_modules
 package.json
 logs/celery/*
 logs/django/*
+logs/mysql/*
 static/sounds/*
 static/word-image/*
 static/category-image/*

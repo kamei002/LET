@@ -2,41 +2,53 @@
 {% load static_cb %}
 
 {% block head %}
-    <!-- <link href="{% static 'css/word/learn.css' %}" rel="stylesheet"> -->
+    <link href="{% static 'css/word/learn_result.css' %}" rel="stylesheet">
 {% endblock %}
 {% block bottom %}
-    <!-- <script type="text/javascript" src="{% static 'js/word/learn.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/word/learn_result.js' %}"></script>
 {% endblock %}
 {% block content %}
+<div class="learn-result">
+    <div class="flex-center">
+        <a class="button blue" href="/account/dashboard/">Back to home</a>
+        <a class="button green" href="{{learn_url}}">Continue Study</a>
+    </div>
 
-<div class="flex-center">
-    <a class="button blue" href="/account/dashboard/">Back to home</a>
-    <a class="button green" href="{{learn_url}}">Continue Study</a>
-</div>
-
-<div class="flex-center">
-    <h2>Accuracy rate: <span>{{rate}}%</span></h2>
-</div>
-<div class="flex-center">
-    <table class="normal-table">
-        <caption>Learned words</caption>
-        <thead>
-            <th>No</th>
-            <th>word</th>
-            <th>count</th>
-            <th>display_order</th>
-        </thead>
-        <tbody>
-        {% for word_log in word_logs %}
-            <tr class="{% if word_log.is_unknown %}error{% endif %}">
-                <td>{{word_log.english_word.order}}</td>
-                <td>{{word_log.english_word.word}}</td>
-                <td>{{word_log.display_count}}</td>
-                <td>{{word_log.display_order}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="flex-center">
+        <h2>Accuracy rate: <span>{{rate}}%</span></h2>
+    </div>
+    <div class="flex-center">
+        <table class="normal-table">
+            <caption>Learned words</caption>
+            <thead>
+                <th>No</th>
+                <th>word</th>
+                <th>count</th>
+                <th>order</th>
+                <th>checked</th>
+            </thead>
+            <tbody>
+            {% for word_log in word_logs %}
+                <tr class="{% if word_log.is_unknown %}error{% endif %}">
+                    <td class="order">{{word_log.english_word.order}}</td>
+                    <td class="word"><a href="/word/{{word_log.english_word.id}}">{{word_log.english_word.word}}</a></td>
+                    <td class="count">{{word_log.display_count}}</td>
+                    <td class="display_order">{{word_log.display_order}}</td>
+                    <td class="checked-icon">
+                        <div class="checked-inner summary-{{word_log.summary_id}}" v-on:click="toggleStar">
+                            <i
+                                class="fa {% if word_log.is_checked %}fa-star{% else %}fa-star-o{% endif %}"
+                                aria-hidden="true"></i>
+                            <input type="hidden" class="data"
+                                data-is-checked="{{word_log.is_checked}}"
+                                data-word-summary-id="{{word_log.summary_id}}">
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}

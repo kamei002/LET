@@ -1,10 +1,12 @@
 version: '3.7'
 services:
   db:
-    image: mysql:8.0
+    build: ./docker/mysql/
     volumes:
       - db-store:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/my.cnf
+      # - ./docker/mysql/my.cnf:/my.cnf
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./logs/mysql:/var/log/mysql
     environment:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}

@@ -19,6 +19,13 @@
             display: flex;
             justify-content: space-between;
 
+            a{
+                text-decoration: none;
+                &:link { color: inherit; }
+                &:visited { color: inherit; }
+                &:hover { color: inherit; }
+                &:active { color: inherit; }
+            }
             i {
                 cursor: pointer;
                 audio{
@@ -51,7 +58,7 @@
                 }
             }
             .icon{
-                margin: 0 5px;
+                margin: 0 10px;
             }
 
         }

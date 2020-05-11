@@ -1,0 +1,27 @@
+.learn-result .checked-icon div {
+  color: #ffc107;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.learn-result .word a {
+  text-decoration: none;
+}
+
+.learn-result .word a:link {
+  color: inherit;
+}
+
+.learn-result .word a:visited {
+  color: inherit;
+}
+
+.learn-result .word a:hover {
+  color: inherit;
+}
+
+.learn-result .word a:active {
+  color: inherit;
+}

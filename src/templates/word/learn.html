@@ -15,7 +15,10 @@
             <div class="title">
 
                 <div class="left">
-                    <div><span class="order">{{study_word.order}}</span>{{ study_word.word }}</div>
+                    <div>
+                        <span class="order">{{study_word.order}}</span>
+                        <a href="/word/{{study_word.id}}">{{ study_word.word }}</a>
+                    </div>
                     <div class="icon">
                         <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">
                             <audio class="contentAudio" controls="controls" preload="none" id="audio">
@@ -97,6 +100,9 @@
                 ref="answer"
                 v-bind:class="{ 'error': errorAnswer}"
                 autocomplete="off">
+        </div>
+        <div class="flex-center">
+            <div>{{index|add:1}}/{{word_count}}</div>
         </div>
         <div v-on:click="answerWord(0)" class="button green">I know</div>
         <div v-on:click="answerWord(1)" class="button red">I don't know</div>

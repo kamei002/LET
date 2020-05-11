@@ -20,6 +20,26 @@
   justify-content: space-between;
 }
 
+.card-wrap .learn-card .title a {
+  text-decoration: none;
+}
+
+.card-wrap .learn-card .title a:link {
+  color: inherit;
+}
+
+.card-wrap .learn-card .title a:visited {
+  color: inherit;
+}
+
+.card-wrap .learn-card .title a:hover {
+  color: inherit;
+}
+
+.card-wrap .learn-card .title a:active {
+  color: inherit;
+}
+
 .card-wrap .learn-card .title i {
   cursor: pointer;
 }
@@ -59,7 +79,7 @@
 }
 
 .card-wrap .learn-card .title .icon {
-  margin: 0 5px;
+  margin: 0 10px;
 }
 
 .card-wrap .learn-card .content {

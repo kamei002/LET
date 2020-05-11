@@ -235,6 +235,8 @@ def learn_result(request):
         )
         word.display_count = word_summary.display_count
         word.display_order = word_summary.order
+        word.is_checked = word_summary.is_checked
+        word.summary_id = word_summary.id
 
     category_id = request.GET.get("category_id", 'None')
     visible_checked = request.GET.get("visible_checked", 0)

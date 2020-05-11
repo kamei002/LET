@@ -1,0 +1,20 @@
+.learn-result{
+    .checked-icon{
+        div{
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    }
+    .word{
+        a{
+            text-decoration: none;
+            &:link { color: inherit; }
+            &:visited { color: inherit; }
+            &:hover { color: inherit; }
+            &:active { color: inherit; }
+        }
+    }
+}
