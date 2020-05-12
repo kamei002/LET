@@ -38,6 +38,7 @@ def download(link, filename="/static/sounds/test.mp3"):
 def get_audio():
     word_obj_list = word_models.EnglishWord.objects.exclude(audio_path__isnull=True).exclude(audio_path__startswith='/static')
     for word_obj in tqdm(word_obj_list):
+        logger.debug(f"id:{word_obj.id}, word:{word_obj.word}")
         link = word_obj.audio_path
         filename = f'/static/sounds/{word_obj.word}.mp3'
         logger.debug(filename)
@@ -49,6 +50,7 @@ def get_audio():
 def get_img():
     word_obj_list = word_models.EnglishWord.objects.filter(image_path__isnull=True)
     for word_obj in tqdm(word_obj_list):
+        logger.debug(f"id:{word_obj.id}, word:{word_obj.word}")
         word = word_obj.word
         url = f'https://www.shutterstock.com/search/{word}'
         headers = get_scrape_header()
@@ -59,10 +61,10 @@ def get_img():
             link = imgs[0]['src']
             logger.debug(link)
 
-            filename = f'/static/word-image/{word}.jpg'
-            logger.debug(filename)
-            download(link=link, filename=filename)
-            word_obj.image_path = filename
+            # filename = f'/static/word-image/{word}.jpg'
+            # logger.debug(filename)
+            # download(link=link, filename=filename)
+            word_obj.image_path = link
             word_obj.save()
             time.sleep(random.random()*10)
 
@@ -72,6 +74,7 @@ def get_img():
 def scrape_weblio():
     word_obj_list = word_models.EnglishWord.get_scrapable_word()
     for word_obj in tqdm(word_obj_list):
+        logger.debug(f"id:{word_obj.id}, word:{word_obj.word}")
         word = word_obj.word
         url = f'https://ejje.weblio.jp/content/{word}'
         headers = get_scrape_header()
@@ -88,12 +91,13 @@ def scrape_weblio():
         try:
             audio_path = soup.select("#audioDownloadPlayUrl")[0]['href']
             logger.debug(audio_path)
-            filename = f'/static/sounds/{word}.mp3'
-            download(link=audio_path, filename=filename)
+            # filename = f'/static/sounds/{word}.mp3'
+            # download(link=audio_path, filename=audio_path)
         except Exception as e:
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
-            filename = ' '
-        word_obj.audio_path = filename
+            # filename = ' '
+            audio_path = ' '
+        word_obj.audio_path = audio_path
         word_obj.save()
         time.sleep(random.random()*10)
 
@@ -101,6 +105,7 @@ def scrape_oxford():
 
     word_obj_list = word_models.EnglishWord.objects.filter(defines__isnull=True)
     for word_obj in tqdm(word_obj_list):
+        logger.debug(f"id:{word_obj.id}, word:{word_obj.word}")
         word = word_obj.word
         # url = 'https://www.lexico.com/en/definition/prove'
         url = f'https://www.lexico.com/en/definition/{word}'
