@@ -81,11 +81,11 @@ class CategoryWordRelation(models.Model):
         db_table = 'category_word_relation'
 
 class EnglishWord(models.Model):
-    word = models.CharField(max_length=255)
-    mean = models.CharField(max_length=255, null=True)
+    word = models.CharField(max_length=255, unique=True)
+    mean = models.TextField(max_length=255, null=True)
     audio_path = models.CharField(max_length=255, null=True)
     image_path = models.CharField(max_length=255, null=True)
-    order = models.IntegerField(null=True, default=0)
+    # order = models.IntegerField(null=True, default=0)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -208,19 +208,10 @@ class WordLearnSetting(models.Model):
         return setting
 
 
-class Synonyms(models.Model):
-    word = models.CharField(max_length=255)
-    synonym_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='synonyms')
-    english_word = models.ForeignKey(EnglishWord, null=True, on_delete=models.SET_NULL, related_name='related_synonyms')
-
-    class Meta:
-        db_table = 'synonym'
-
-
 class Define(models.Model):
     english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE, related_name='defines')
-    meaning_en = models.CharField(max_length=255, null=True)
-    meaning_ja = models.CharField(max_length=255, null=True)
+    meaning_en = models.TextField(null=True)
+    meaning_ja = models.TextField(null=True)
     parent = models.ForeignKey(
         'self',
         null=True,

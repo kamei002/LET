@@ -16,8 +16,8 @@
 
                 <div class="left">
                     <div>
-                        <span class="order">{{study_word.order}}</span>
-                        <a href="/word/{{study_word.id}}">{{ study_word.word }}</a>
+                        <span class="order">{{study_word.id}}</span>
+                        {{ study_word.word }}
                     </div>
                     <div class="icon">
                         <i v-on:click="sound" class="fa fa-volume-up contentTopAudioIcon">

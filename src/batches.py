@@ -10,6 +10,7 @@ import logging
 import requests
 import random
 import time
+from unidecode import unidecode
 logger = logging.getLogger("app")
 
 
@@ -35,7 +36,7 @@ def download(link, filename="/static/sounds/test.mp3"):
         f.write(req.content)
 
 def get_audio():
-    word_obj_list = word_models.EnglishWord.objects.filter(audio_path__contains='https://weblio')
+    word_obj_list = word_models.EnglishWord.objects.exclude(audio_path__isnull=True).exclude(audio_path__startswith='/static')
     for word_obj in tqdm(word_obj_list):
         link = word_obj.audio_path
         filename = f'/static/sounds/{word_obj.word}.mp3'
@@ -68,7 +69,7 @@ def get_img():
         except Exception as e:
             logger.exception(f'error_message: {e}')
 
-def get_mean():
+def scrape_weblio():
     word_obj_list = word_models.EnglishWord.get_scrapable_word()
     for word_obj in tqdm(word_obj_list):
         word = word_obj.word
@@ -86,82 +87,14 @@ def get_mean():
 
         try:
             audio_path = soup.select("#audioDownloadPlayUrl")[0]['href']
+            logger.debug(audio_path)
+            filename = f'/static/sounds/{word}.mp3'
+            download(link=audio_path, filename=filename)
         except Exception as e:
             logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
-            audio_path = ' '
-        logger.debug(audio_path)
-        word_obj.audio_path = audio_path
+            filename = ' '
+        word_obj.audio_path = filename
         word_obj.save()
-        time.sleep(random.random()*10)
-
-def get_synonyms():
-
-    word_obj_list = word_models.EnglishWord.objects.filter(synonyms__isnull=True)
-
-    for word_obj in tqdm(word_obj_list):
-        word = word_obj.word
-        url = f'https://www.thesaurus.com/browse/{word}'
-        headers = get_scrape_header()
-        res = requests.get(url, headers=headers)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        try:
-            logger.debug(f"word:{word}")
-            synonyms_node = soup.select(".css-18rr30y.etbu2a31")
-            # logger.debug(f"synonyms_node:{synonyms_node}")
-            synonym_word_id = word_obj.id
-            for synonym_node in synonyms_node:
-                synonym = synonym_node.string
-                english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
-                synonym_obj = word_models.Synonyms(
-                    synonym_word_id=synonym_word_id,
-                    word=synonym,
-                    english_word=english_word
-                )
-                synonym_obj.save()
-                # logger.debug(synonym)
-
-        except Exception as e:
-            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
-
-        time.sleep(random.random()*10)
-
-def get_synonyms_from_oxford():
-
-    word_obj_list = word_models.EnglishWord.objects.filter(synonyms__isnull=True)
-    for word_obj in tqdm(word_obj_list):
-        word = word_obj.word
-        # url = 'https://www.lexico.com/en/definition/groan'
-        url = f'https://www.lexico.com/en/definition/{word}'
-        headers = get_scrape_header()
-        res = requests.get(url, headers=headers)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        try:
-            logger.debug(f"word:{word}")
-            synonyms_node = soup.select(".synonyms .exg .syn")
-            logger.debug(f"synonyms_node:{synonyms_node}")
-            # logger.debug(f"synonyms_node:{soup.select('.exg')}")
-
-            synonym_word_id = word_obj.id
-            synonyms = set()
-            for synonym_node in synonyms_node:
-                synonym_list = synonym_node.string
-                for synonym in synonym_list.split(','):
-                    synonym = synonym.replace(" ", "")
-                    if synonym:
-                        synonyms.add(synonym)
-
-            logger.debug(synonyms)
-            for synonym in synonyms:
-                english_word = word_models.EnglishWord.objects.filter(word=synonym).first()
-                synonym_obj = word_models.Synonyms(
-                    synonym_word_id=synonym_word_id,
-                    word=synonym,
-                    english_word=english_word
-                )
-                synonym_obj.save()
-
-        except Exception as e:
-            logger.exception(f'word_id:{word_obj.id} word:{word_obj.word} error_message: {e}')
         time.sleep(random.random()*10)
 
 def scrape_oxford():
@@ -309,3 +242,33 @@ def update_meaning_ja(csv_path='define.csv'):
     cursor = connection.cursor()
     cursor.execute(sql)
     transaction.atomic()
+
+def register_unregistered_synonym_word(user_id=1):
+
+    word_obj = word_models.EnglishWord.objects.all().values_list('word', flat=True)
+    word_set = set([unidecode(w.lower()) for w in word_obj])
+    synonym_obj = word_models.MeaningSynonym.objects.all().values_list('word', flat=True)
+    synonym_set = set([unidecode(w.lower()) for w in synonym_obj])
+    register_set = synonym_set - word_set
+    word_obj_list = []
+    for word in register_set:
+        word_obj = word_models.EnglishWord(
+            word=word,
+            created_by_id=user_id
+        )
+        word_obj_list.append(word_obj)
+    word_models.EnglishWord.objects.bulk_create(word_obj_list)
+
+def set_synonym_relation():
+    synonym_obj = word_models.MeaningSynonym.objects.filter(english_word_id__isnull=True).filter()
+    update_objs = []
+    for synonym in tqdm(synonym_obj):
+        word_obj = word_models.EnglishWord.objects.filter(word=synonym.word).first()
+        if not word_obj:
+            print(f'not found: {synonym.word}')
+            continue
+        synonym.english_word = word_obj
+        # synonym.save()
+        update_objs.append(synonym)
+
+    word_models.MeaningSynonym.objects.bulk_update(update_objs, ['english_word_id'])
