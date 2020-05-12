@@ -64,12 +64,14 @@ def get_img():
             # filename = f'/static/word-image/{word}.jpg'
             # logger.debug(filename)
             # download(link=link, filename=filename)
-            word_obj.image_path = link
-            word_obj.save()
-            time.sleep(random.random()*10)
 
         except Exception as e:
             logger.exception(f'error_message: {e}')
+            link = ' '
+
+        word_obj.image_path = link
+        word_obj.save()
+        time.sleep(random.random()*10)
 
 def scrape_weblio():
     word_obj_list = word_models.EnglishWord.get_scrapable_word()
