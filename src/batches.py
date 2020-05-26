@@ -2,7 +2,7 @@ from learn_word import models as word_models
 from account import models as account_models
 from tqdm import tqdm
 from bs4 import BeautifulSoup
-
+from unidecode import unidecode
 from django.db import connection, transaction
 
 import pandas as pd
@@ -10,7 +10,9 @@ import logging
 import requests
 import random
 import time
-from unidecode import unidecode
+import os
+import shutil
+
 logger = logging.getLogger("app")
 
 
@@ -279,3 +281,61 @@ def set_synonym_relation():
         update_objs.append(synonym)
 
     word_models.MeaningSynonym.objects.bulk_update(update_objs, ['english_word_id'])
+
+
+SPREAD_DIR_KIND_IMG = 1
+SPREAD_DIR_KIND_AUDIO = 2
+
+def spread_img_dir(path="/static/word-image", limit=100):
+    _spread_dir(path=path, limit=limit, save_kind=SPREAD_DIR_KIND_IMG)
+
+def spread_audio_dir(path="/static/sounds", limit=100):
+    _spread_dir(path=path, limit=limit, save_kind=SPREAD_DIR_KIND_AUDIO)
+
+def _spread_dir(path, limit, save_kind):
+
+    files = os.listdir(path)
+    (file_count, target_dir, dir_index) = _spread_next_dir(path=path, dir_index=1, limit=limit)
+
+    for file_name in tqdm(files):
+        full_path = os.path.join(path, file_name)
+        if not os.path.isfile(full_path):
+            # print(f"{file_name} is not file")
+            continue
+
+        new_path = os.path.join(target_dir, file_name)
+        shutil.move(full_path, new_path)
+
+        if save_kind == SPREAD_DIR_KIND_IMG:
+            update_words = word_models.EnglishWord.objects.filter(image_path=full_path)
+            for word_obj in update_words:
+                word_obj.image_path = new_path
+                word_obj.save()
+
+        elif save_kind == SPREAD_DIR_KIND_AUDIO:
+            update_words = word_models.EnglishWord.objects.filter(audio_path=full_path)
+            for word_obj in update_words:
+                word_obj.audio_path = new_path
+                word_obj.save()
+
+        file_count = file_count + 1
+        if file_count > limit:
+            (file_count, target_dir, dir_index) = _spread_next_dir(path=path, dir_index=dir_index, limit=limit)
+
+def _spread_next_dir(path, dir_index, limit):
+    file_count = 0
+    target_dir = ''
+    while(True):
+        target_dir = f'{path}/{dir_index}'
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+            return (file_count, target_dir, dir_index)
+
+        files = os.listdir(path)
+        files_file = [f for f in files if os.path.isfile(os.path.join(path, f))]
+        dir_file_count = len(files_file)
+        if dir_file_count < limit:
+            file_count = dir_file_count
+            return (file_count, target_dir, dir_index)
+
+        dir_index = dir_index + 1
