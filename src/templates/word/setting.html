@@ -58,6 +58,33 @@
             </div>
             <div class="valid-error">{{ form.errors.show_synonyms }}</div>
         </div>
+
+        <div class="field-wrap">
+            <div class="field-contents">
+                <div class='contents'>
+                    <label>Shuffle after get words?</label>
+                    <div class="switchArea">
+                        {{ form.is_shuffle }}
+                        <label for="{{ form.is_shuffle.id_for_label }}"><span></span></label>
+                        <div class="swImg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="valid-error">{{ form.errors.is_shuffle }}</div>
+        </div>
+        <div class="field-wrap">
+            <div class="field-contents">
+                <div class='contents'>
+                    <label>Get words at random?</label>
+                    <div class="switchArea">
+                        {{ form.is_random }}
+                        <label for="{{ form.is_random.id_for_label }}"><span></span></label>
+                        <div class="swImg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="valid-error">{{ form.errors.is_random }}</div>
+        </div>
         <div class="flex-center field-wrap">
             <input type="submit" class="btn btn-primary" value="Save option">
         </div>

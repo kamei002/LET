@@ -5,6 +5,8 @@
     <link href="{% static 'css/word/learn_result.css' %}" rel="stylesheet">
 {% endblock %}
 {% block bottom %}
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/js/jquery.tablesorter.min.js"></script>
     <script type="text/javascript" src="{% static 'js/word/learn_result.js' %}"></script>
 {% endblock %}
 {% block content %}
@@ -18,7 +20,7 @@
         <h2>Accuracy rate: <span>{{rate}}%</span></h2>
     </div>
     <div class="flex-center">
-        <table class="normal-table">
+        <table id="sort-table" class="normal-table">
             <caption>Learned words</caption>
             <thead>
                 <th>No</th>

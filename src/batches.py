@@ -37,7 +37,7 @@ def download(link, filename="/static/sounds/test.mp3"):
     with open(filename, 'wb') as f:
         f.write(req.content)
 
-def get_audio():
+def download_audio():
     word_obj_list = word_models.EnglishWord.objects.exclude(audio_path__isnull=True).exclude(audio_path__startswith='/static')
     for word_obj in tqdm(word_obj_list):
         logger.debug(f"id:{word_obj.id}, word:{word_obj.word}")
@@ -331,8 +331,8 @@ def _spread_next_dir(path, dir_index, limit):
             os.makedirs(target_dir)
             return (file_count, target_dir, dir_index)
 
-        files = os.listdir(path)
-        files_file = [f for f in files if os.path.isfile(os.path.join(path, f))]
+        files_file = os.listdir(target_dir)
+        # files_file = [f for f in files_file if os.path.isfile(os.path.join(target_dir, f))]
         dir_file_count = len(files_file)
         if dir_file_count < limit:
             file_count = dir_file_count

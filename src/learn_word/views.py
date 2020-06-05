@@ -13,7 +13,10 @@ from django.core.cache import cache
 from config import utility
 from learn_word import forms
 from learn_word import models
+
+import random
 import logging
+
 logger = logging.getLogger("app")
 
 
@@ -174,9 +177,12 @@ def learn(request):
             user_id=user.id,
             category_id=category_id,
             limit=limit,
-            is_checked=visible_checked
+            is_checked=visible_checked,
+            is_random=setting.is_random
         )
         study_words = list(study_words)
+        if setting.is_shuffle:
+            random.shuffle(study_words)
         cache.set(key, study_words, timeout=60*60*24)
         logger.info("get study_words")
 

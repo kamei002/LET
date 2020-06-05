@@ -10,7 +10,7 @@ logger = logging.getLogger("app")
 UNKNOWN_POINT = -11
 KNOWN_POINT = 10
 
-def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
+def show_study_words(user_id, limit=100, category_id=None, is_checked=0, is_random=False):
     sql = "SELECT english_word.* FROM english_word " \
         + "LEFT JOIN word_summary ON english_word.id = word_summary.english_word_id " \
         + f"AND word_summary.user_id = {user_id} "
@@ -28,9 +28,12 @@ def show_study_words(user_id, limit=100, category_id=None, is_checked=0):
             ")"
 
     if is_checked:
-        sql += f"AND word_summary.is_checked = true "
-
-    sql += f"ORDER BY word_summary.order LIMIT {limit}"
+        sql += f" AND word_summary.is_checked = true "
+    if is_random:
+        sql += f" ORDER BY RAND()"
+    else:
+        sql += f" ORDER BY word_summary.order "
+    sql += f" LIMIT {limit}"
 
     word_list = EnglishWord.objects.raw(sql)
     logger.debug(word_list)
@@ -194,8 +197,10 @@ class WordLearnSetting(models.Model):
     learn_num = models.IntegerField(default=100)
     default_unknown = models.BooleanField(default=False)
     show_mean = models.BooleanField(default=True)
-    show_oxford_mean = models.BooleanField(default=True)
+    show_oxford_mean = models.BooleanField(default=False)
     show_synonyms = models.BooleanField(default=True)
+    is_shuffle = models.BooleanField(default=False)
+    is_random = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'word_learning_setting'

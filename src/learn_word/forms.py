@@ -18,4 +18,6 @@ class SettingForm(ModelForm):
             'show_mean',
             'show_oxford_mean',
             'show_synonyms',
+            'is_shuffle',
+            'is_random',
         ]
