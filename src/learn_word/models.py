@@ -13,7 +13,7 @@ KNOWN_POINT = 10
 def show_study_words(user_id, limit=100, category_id=None, is_checked=0, is_random=False):
     sql = "SELECT english_word.* FROM english_word " \
         + "LEFT JOIN word_summary ON english_word.id = word_summary.english_word_id " \
-        + f"AND word_summary.user_id = {user_id} "
+        # + f"AND word_summary.user_id = {user_id} "
 
     sql += f"WHERE 1=1 "
     if category_id:
